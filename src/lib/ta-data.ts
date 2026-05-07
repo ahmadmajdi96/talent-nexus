@@ -475,6 +475,20 @@ export type BgCheckStatus =
   | "NOT_STARTED" | "CONSENT_PENDING" | "REQUESTED" | "IN_PROGRESS"
   | "ADVERSE_ACTION" | "CLEAR" | "CANCELLED";
 
+export interface AdverseAction {
+  reasons: string[]; // FCRA reasons (e.g., "Criminal record", "Misrepresented employment")
+  preNoticeAt?: string; // pre-adverse action notice sent
+  disputeWindowEndsAt?: string; // typically pre-notice + 5 business days
+  disputed?: boolean;
+  disputedAt?: string;
+  disputeNotes?: string;
+  finalNoticeAt?: string;
+  decision?: "WITHDRAWN" | "RESCINDED_OFFER" | "PROCEED";
+  decisionBy?: string;
+  decisionAt?: string;
+  decisionRationale?: string;
+}
+
 export interface BackgroundCheck {
   id: string;
   candidateId: string;
@@ -492,6 +506,7 @@ export interface BackgroundCheck {
   recruiterNotified: boolean;
   notifications: { at: string; channel: "email" | "in_app" | "slack"; to: string; subject: string }[];
   events: { at: string; actor: string; text: string }[];
+  adverseAction?: AdverseAction;
 }
 
 export const backgroundChecks: BackgroundCheck[] = [
