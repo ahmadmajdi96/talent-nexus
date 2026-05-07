@@ -3,8 +3,9 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Briefcase, LayoutDashboard, Users2, Kanban, CalendarCheck2, FileSignature,
   Megaphone, BarChart3, Settings2, FileText, BellRing, Search, LogOut,
-  UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles,
+  UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles, Bell, Share2,
 } from "lucide-react";
+import { useCurrentUser, setCurrentUser, listUserPresets } from "@/lib/role";
 
 type Item = { to: string; label: string; icon: any };
 const sections: { label: string; items: Item[] }[] = [
@@ -30,9 +31,11 @@ const sections: { label: string; items: Item[] }[] = [
   { label: "Insights", items: [
     { to: "/analytics", label: "Recruitment Analytics", icon: BarChart3 },
     { to: "/announcements", label: "TA Announcements", icon: Megaphone },
+    { to: "/people-hub-feed", label: "People Hub Feed", icon: Share2 },
   ]},
   { label: "Administration", items: [
     { to: "/audit", label: "Audit Log", icon: FileText },
+    { to: "/notifications", label: "Notifications", icon: Bell },
     { to: "/settings", label: "Settings", icon: Settings2 },
   ]},
 ];
@@ -40,6 +43,9 @@ const sections: { label: string; items: Item[] }[] = [
 export default function AppShell({ children }: { children: ReactNode }) {
   const { location } = useRouterState();
   const path = location.pathname;
+  const me = useCurrentUser();
+  const presets = listUserPresets();
+  const initials = me.name.split(" ").map(s => s[0]).join("").slice(0,2).toUpperCase();
   return (
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col">
@@ -74,12 +80,20 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
         <div className="p-3 border-t border-sidebar-border space-y-1.5">
           <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-sidebar-accent/60 border border-sidebar-border/50">
-            <div className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0 shadow-sm" style={{ background: "var(--gradient-primary)" }}>NH</div>
+            <div className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0 shadow-sm" style={{ background: "var(--gradient-primary)" }}>{initials}</div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold truncate text-sidebar-foreground">Nora Haddad</div>
-              <div className="text-[10px] text-sidebar-muted truncate">TA Lead · EMP-1007</div>
+              <div className="text-xs font-semibold truncate text-sidebar-foreground">{me.name}</div>
+              <div className="text-[10px] text-sidebar-muted truncate">{me.role.replace("_"," ")} · {me.id}</div>
             </div>
           </div>
+          <select
+            value={me.id}
+            onChange={e => { const p = presets.find(x => x.id === e.target.value); if (p) setCurrentUser(p); }}
+            title="Switch role (demo)"
+            className="w-full text-[11px] h-8 rounded-md bg-sidebar-accent/40 border border-sidebar-border/60 text-sidebar-foreground px-2"
+          >
+            {presets.map(p => <option key={p.id} value={p.id}>{p.role.replace("_"," ")} — {p.name}</option>)}
+          </select>
           <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-sidebar-muted hover:text-sidebar-accent-foreground hover:bg-sidebar-accent transition-colors">
             <LogOut className="h-4 w-4" /> Sign out
           </button>
