@@ -103,13 +103,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
           >
             {presets.map(p => <option key={p.id} value={p.id}>{p.role.replace("_"," ")} — {p.name}</option>)}
           </select>
-          <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-sidebar-muted hover:text-sidebar-accent-foreground hover:bg-sidebar-accent transition-colors">
+          <button onClick={() => { signOut(); navigate({ to: "/login" }); }} className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-sidebar-muted hover:text-sidebar-accent-foreground hover:bg-sidebar-accent transition-colors">
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 min-w-0 overflow-auto" style={{ background: "var(--gradient-hero)" }}>
+      <main className="flex-1 min-w-0 ml-64 h-screen overflow-y-auto" style={{ background: "var(--gradient-hero)" }}>
         <div className="sticky top-0 z-10 backdrop-blur-md bg-background/70 border-b border-border">
           <div className="px-8 py-3 max-w-[1600px] mx-auto flex items-center gap-4">
             <div className="relative flex-1 max-w-md">
