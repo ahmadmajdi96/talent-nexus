@@ -114,6 +114,8 @@ function BgPage() {
                 {b.vendorResponse.reportUrl && <a href={b.vendorResponse.reportUrl} className="text-primary text-xs inline-flex items-center gap-1 mt-1"><FileText className="h-3 w-3" /> Full report</a>}
               </div>}
 
+              <AdverseActionPanel bgcId={b.id} aa={b.adverseAction} status={b.status} />
+
               <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
                 {(["IN_PROGRESS","CLEAR","ADVERSE_ACTION","CANCELLED"] as BgCheckStatus[]).map(s => (
                   <button key={s} onClick={() => advance(b.id, s)} disabled={b.status === s}
