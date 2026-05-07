@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VendorSimRouteImport } from './routes/vendor-sim'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as PeopleHubFeedRouteImport } from './routes/people-hub-feed'
 import { Route as OffersRouteImport } from './routes/offers'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as ForecastsRouteImport } from './routes/forecasts'
 import { Route as ConversionRouteImport } from './routes/conversion'
@@ -46,9 +48,19 @@ const ReferralsRoute = ReferralsRouteImport.update({
   path: '/referrals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PeopleHubFeedRoute = PeopleHubFeedRouteImport.update({
+  id: '/people-hub-feed',
+  path: '/people-hub-feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OffersRoute = OffersRouteImport.update({
   id: '/offers',
   path: '/offers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewsRoute = InterviewsRouteImport.update({
@@ -148,7 +160,9 @@ export interface FileRoutesByFullPath {
   '/conversion': typeof ConversionRoute
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
+  '/notifications': typeof NotificationsRoute
   '/offers': typeof OffersRoute
+  '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
   '/vendor-sim': typeof VendorSimRoute
@@ -171,7 +185,9 @@ export interface FileRoutesByTo {
   '/conversion': typeof ConversionRoute
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
+  '/notifications': typeof NotificationsRoute
   '/offers': typeof OffersRoute
+  '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
   '/vendor-sim': typeof VendorSimRoute
@@ -195,7 +211,9 @@ export interface FileRoutesById {
   '/conversion': typeof ConversionRoute
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
+  '/notifications': typeof NotificationsRoute
   '/offers': typeof OffersRoute
+  '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
   '/vendor-sim': typeof VendorSimRoute
@@ -220,7 +238,9 @@ export interface FileRouteTypes {
     | '/conversion'
     | '/forecasts'
     | '/interviews'
+    | '/notifications'
     | '/offers'
+    | '/people-hub-feed'
     | '/referrals'
     | '/settings'
     | '/vendor-sim'
@@ -243,7 +263,9 @@ export interface FileRouteTypes {
     | '/conversion'
     | '/forecasts'
     | '/interviews'
+    | '/notifications'
     | '/offers'
+    | '/people-hub-feed'
     | '/referrals'
     | '/settings'
     | '/vendor-sim'
@@ -266,7 +288,9 @@ export interface FileRouteTypes {
     | '/conversion'
     | '/forecasts'
     | '/interviews'
+    | '/notifications'
     | '/offers'
+    | '/people-hub-feed'
     | '/referrals'
     | '/settings'
     | '/vendor-sim'
@@ -290,7 +314,9 @@ export interface RootRouteChildren {
   ConversionRoute: typeof ConversionRoute
   ForecastsRoute: typeof ForecastsRoute
   InterviewsRoute: typeof InterviewsRoute
+  NotificationsRoute: typeof NotificationsRoute
   OffersRoute: typeof OffersRoute
+  PeopleHubFeedRoute: typeof PeopleHubFeedRoute
   ReferralsRoute: typeof ReferralsRoute
   SettingsRoute: typeof SettingsRoute
   VendorSimRoute: typeof VendorSimRoute
@@ -325,11 +351,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReferralsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/people-hub-feed': {
+      id: '/people-hub-feed'
+      path: '/people-hub-feed'
+      fullPath: '/people-hub-feed'
+      preLoaderRoute: typeof PeopleHubFeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/offers': {
       id: '/offers'
       path: '/offers'
       fullPath: '/offers'
       preLoaderRoute: typeof OffersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interviews': {
@@ -477,7 +517,9 @@ const rootRouteChildren: RootRouteChildren = {
   ConversionRoute: ConversionRoute,
   ForecastsRoute: ForecastsRoute,
   InterviewsRoute: InterviewsRoute,
+  NotificationsRoute: NotificationsRoute,
   OffersRoute: OffersRoute,
+  PeopleHubFeedRoute: PeopleHubFeedRoute,
   ReferralsRoute: ReferralsRoute,
   SettingsRoute: SettingsRoute,
   VendorSimRoute: VendorSimRoute,
