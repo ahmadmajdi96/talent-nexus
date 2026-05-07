@@ -1,11 +1,12 @@
-import { ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { ReactNode, useEffect } from "react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Briefcase, LayoutDashboard, Users2, Kanban, CalendarCheck2, FileSignature,
   Megaphone, BarChart3, Settings2, FileText, BellRing, Search, LogOut,
   UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles, Bell, Share2,
 } from "lucide-react";
 import { useCurrentUser, setCurrentUser, listUserPresets } from "@/lib/role";
+import { useAuthSession, signOut } from "@/lib/auth";
 
 type Item = { to: string; label: string; icon: any };
 const sections: { label: string; items: Item[] }[] = [
@@ -48,9 +49,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const me = useCurrentUser();
   const presets = listUserPresets();
   const initials = me.name.split(" ").map(s => s[0]).join("").slice(0,2).toUpperCase();
+  const auth = useAuthSession();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!auth && path !== "/login") navigate({ to: "/login", search: { redirect: path } as any });
+  }, [auth, path, navigate]);
+  if (!auth) return null;
   return (
-    <div className="min-h-screen flex bg-background">
-      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col">
+    <div className="h-screen flex bg-background overflow-hidden">
+      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col fixed inset-y-0 left-0 z-20">
         <div className="px-5 py-5 flex items-center gap-3 border-b border-sidebar-border">
           <div className="h-10 w-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-md" style={{ background: "var(--gradient-primary)" }}>
             <Briefcase className="h-5 w-5" />
@@ -96,13 +103,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
           >
             {presets.map(p => <option key={p.id} value={p.id}>{p.role.replace("_"," ")} — {p.name}</option>)}
           </select>
-          <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-sidebar-muted hover:text-sidebar-accent-foreground hover:bg-sidebar-accent transition-colors">
+          <button onClick={() => { signOut(); navigate({ to: "/login" }); }} className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-sidebar-muted hover:text-sidebar-accent-foreground hover:bg-sidebar-accent transition-colors">
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 min-w-0 overflow-auto" style={{ background: "var(--gradient-hero)" }}>
+      <main className="flex-1 min-w-0 ml-64 h-screen overflow-y-auto" style={{ background: "var(--gradient-hero)" }}>
         <div className="sticky top-0 z-10 backdrop-blur-md bg-background/70 border-b border-border">
           <div className="px-8 py-3 max-w-[1600px] mx-auto flex items-center gap-4">
             <div className="relative flex-1 max-w-md">

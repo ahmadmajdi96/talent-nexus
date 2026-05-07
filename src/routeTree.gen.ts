@@ -17,6 +17,7 @@ import { Route as PeopleHubFeedRouteImport } from './routes/people-hub-feed'
 import { Route as OffersRouteImport } from './routes/offers'
 import { Route as NotificationsSettingsRouteImport } from './routes/notifications-settings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as ForecastsRouteImport } from './routes/forecasts'
 import { Route as ConversionRouteImport } from './routes/conversion'
@@ -75,6 +76,11 @@ const NotificationsSettingsRoute = NotificationsSettingsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewsRoute = InterviewsRouteImport.update({
@@ -185,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/conversion': typeof ConversionRoute
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
+  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/conversion': typeof ConversionRoute
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
+  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/conversion': typeof ConversionRoute
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
+  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/conversion'
     | '/forecasts'
     | '/interviews'
+    | '/login'
     | '/notifications'
     | '/notifications-settings'
     | '/offers'
@@ -304,6 +314,7 @@ export interface FileRouteTypes {
     | '/conversion'
     | '/forecasts'
     | '/interviews'
+    | '/login'
     | '/notifications'
     | '/notifications-settings'
     | '/offers'
@@ -333,6 +344,7 @@ export interface FileRouteTypes {
     | '/conversion'
     | '/forecasts'
     | '/interviews'
+    | '/login'
     | '/notifications'
     | '/notifications-settings'
     | '/offers'
@@ -363,6 +375,7 @@ export interface RootRouteChildren {
   ConversionRoute: typeof ConversionRoute
   ForecastsRoute: typeof ForecastsRoute
   InterviewsRoute: typeof InterviewsRoute
+  LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
   NotificationsSettingsRoute: typeof NotificationsSettingsRoute
   OffersRoute: typeof OffersRoute
@@ -437,6 +450,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interviews': {
@@ -598,6 +618,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConversionRoute: ConversionRoute,
   ForecastsRoute: ForecastsRoute,
   InterviewsRoute: InterviewsRoute,
+  LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
   NotificationsSettingsRoute: NotificationsSettingsRoute,
   OffersRoute: OffersRoute,
