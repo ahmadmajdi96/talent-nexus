@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Requisitions, pipeline, interviews, offers — connected to CoreHR." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@CORTA" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

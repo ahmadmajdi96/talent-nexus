@@ -52,7 +52,7 @@ function AuditPage() {
     const header = ["id","at","entity","entityId","action","actor","text"].join(",");
     const body = rows.map(r => [r.id, r.at, r.entity, r.entityId, r.action, r.actor, JSON.stringify(r.text)].join(",")).join("\n");
     const blob = new Blob([header + "\n" + body], { type: "text/csv" });
-    triggerDownload(blob, `hireflow-audit-${Date.now()}.csv`);
+    triggerDownload(blob, `corta-audit-${Date.now()}.csv`);
     toast.success(`Exported ${rows.length} rows to CSV`);
   };
 

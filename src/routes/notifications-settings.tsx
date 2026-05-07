@@ -19,7 +19,7 @@ export const Route = createFileRoute("/notifications-settings")({
 const CHANNELS: { key: Channel; label: string; icon: any; description: string }[] = [
   { key: "email", label: "Email", icon: Mail, description: "FCRA milestones and dispute window alerts via SMTP." },
   { key: "in_app", label: "In-app", icon: Smartphone, description: "Push notifications inside CORTA Acquisition and CoreFlow Nexus." },
-  { key: "slack", label: "Slack", icon: MessageSquare, description: "Posts to #hireflow-alerts (and recruiter DMs)." },
+  { key: "slack", label: "Slack", icon: MessageSquare, description: "Posts to #corta-alerts (and recruiter DMs)." },
 ];
 
 const ROLES: Role[] = ["TA_LEAD", "RECRUITER", "HIRING_MANAGER", "INTERVIEWER"];
