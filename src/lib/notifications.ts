@@ -1,6 +1,7 @@
 // Multi-channel notification dispatch with retry handling.
 // In a real backend this would be a queue + worker; here we simulate so the UI can show retries.
 import { useSyncExternalStore } from "react";
+import { isChannelEnabled } from "./notif-prefs";
 
 export type Channel = "email" | "in_app" | "slack";
 export type NotifStatus = "PENDING" | "SENT" | "RETRYING" | "FAILED";
