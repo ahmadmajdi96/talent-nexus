@@ -64,6 +64,7 @@ function ScorecardForm() {
   const [interviewerName, setInterviewerName] = useState("Marcus Lindberg");
   const [notes, setNotes] = useState("");
   const [rec, setRec] = useState<Scorecard["recommendation"]>("HIRE");
+  const [signature, setSignature] = useState("");
 
   if (!c) return <AppShell><div className="text-center py-20 text-muted-foreground">Candidate not found.</div></AppShell>;
 
@@ -71,9 +72,10 @@ function ScorecardForm() {
     setFocus(f); setScores(COMPETENCIES_BY_FOCUS[f].map(() => 3));
   };
 
-  const submit = () => {
+  const submit = (alsoFinalize: boolean) => {
     const parsed = schema.safeParse({ interviewerName, focus, scores, notes, recommendation: rec });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+    if (alsoFinalize && signature.trim().length < 3) { toast.error("Type your full name to sign off"); return; }
     submitScorecard(c.id, {
       interviewerId: "EMP-1004",
       interviewerName,
@@ -82,7 +84,13 @@ function ScorecardForm() {
       notes,
       recommendation: rec,
     });
-    toast.success("Scorecard submitted", { description: "Hiring manager has been notified." });
+    if (alsoFinalize) {
+      const last = candidateById(c.id)?.scorecards.at(-1);
+      if (last) finalizeScorecard(c.id, last.id, signature);
+      toast.success("Scorecard finalized & locked", { description: "Hiring manager has been notified." });
+    } else {
+      toast.success("Scorecard saved as draft");
+    }
     navigate({ to: "/candidates/$id", params: { id: c.id } });
   };
 
