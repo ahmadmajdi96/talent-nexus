@@ -3,8 +3,9 @@ import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
 import { Avatar } from "@/components/Avatar";
-import { ArrowLeft, Mail, Phone, MapPin, FileText, Star, ShieldCheck, Calendar, GitMerge, ClipboardCheck, RefreshCw } from "lucide-react";
-import { candidateById, reqById, offersByCandidate, interviews, STAGE_LABEL, bgChecksByCandidate, conversionByCandidate, aggregateScorecards, retryConversion, conversionDeliveries } from "@/lib/ta-data";
+import { useState } from "react";
+import { ArrowLeft, Mail, Phone, MapPin, FileText, Star, ShieldCheck, Calendar, GitMerge, ClipboardCheck, RefreshCw, Lock, Gavel } from "lucide-react";
+import { candidateById, reqById, offersByCandidate, interviews, STAGE_LABEL, bgChecksByCandidate, conversionByCandidate, aggregateScorecards, retryConversion, conversionDeliveries, recordHiringDecision, decisionsByCandidate, type HiringDecision } from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
 import { toast } from "sonner";
 
