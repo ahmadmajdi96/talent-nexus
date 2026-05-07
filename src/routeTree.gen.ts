@@ -13,8 +13,10 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as OffersRouteImport } from './routes/offers'
 import { Route as InterviewsRouteImport } from './routes/interviews'
+import { Route as ForecastsRouteImport } from './routes/forecasts'
 import { Route as ConversionRouteImport } from './routes/conversion'
 import { Route as CareersRouteImport } from './routes/careers'
+import { Route as BackgroundChecksRouteImport } from './routes/background-checks'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
@@ -26,6 +28,7 @@ import { Route as CandidatesIndexRouteImport } from './routes/candidates.index'
 import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
 import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
+import { Route as CandidatesIdScorecardRouteImport } from './routes/candidates.$id.scorecard'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -47,6 +50,11 @@ const InterviewsRoute = InterviewsRouteImport.update({
   path: '/interviews',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForecastsRoute = ForecastsRouteImport.update({
+  id: '/forecasts',
+  path: '/forecasts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConversionRoute = ConversionRouteImport.update({
   id: '/conversion',
   path: '/conversion',
@@ -55,6 +63,11 @@ const ConversionRoute = ConversionRouteImport.update({
 const CareersRoute = CareersRouteImport.update({
   id: '/careers',
   path: '/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BackgroundChecksRoute = BackgroundChecksRouteImport.update({
+  id: '/background-checks',
+  path: '/background-checks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuditRoute = AuditRouteImport.update({
@@ -112,6 +125,11 @@ const CandidatesIdRoute = CandidatesIdRouteImport.update({
   path: '/candidates/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CandidatesIdScorecardRoute = CandidatesIdScorecardRouteImport.update({
+  id: '/scorecard',
+  path: '/scorecard',
+  getParentRoute: () => CandidatesIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -119,18 +137,21 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/announcements': typeof AnnouncementsRoute
   '/audit': typeof AuditRoute
+  '/background-checks': typeof BackgroundChecksRoute
   '/careers': typeof CareersRoute
   '/conversion': typeof ConversionRoute
+  '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/offers': typeof OffersRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
-  '/candidates/$id': typeof CandidatesIdRoute
+  '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
   '/candidates/': typeof CandidatesIndexRoute
   '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
+  '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,18 +159,21 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/announcements': typeof AnnouncementsRoute
   '/audit': typeof AuditRoute
+  '/background-checks': typeof BackgroundChecksRoute
   '/careers': typeof CareersRoute
   '/conversion': typeof ConversionRoute
+  '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/offers': typeof OffersRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
-  '/candidates/$id': typeof CandidatesIdRoute
+  '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
   '/candidates': typeof CandidatesIndexRoute
   '/pipeline': typeof PipelineIndexRoute
   '/requisitions': typeof RequisitionsIndexRoute
+  '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -158,18 +182,21 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/announcements': typeof AnnouncementsRoute
   '/audit': typeof AuditRoute
+  '/background-checks': typeof BackgroundChecksRoute
   '/careers': typeof CareersRoute
   '/conversion': typeof ConversionRoute
+  '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/offers': typeof OffersRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
-  '/candidates/$id': typeof CandidatesIdRoute
+  '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
   '/candidates/': typeof CandidatesIndexRoute
   '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
+  '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,8 +206,10 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/announcements'
     | '/audit'
+    | '/background-checks'
     | '/careers'
     | '/conversion'
+    | '/forecasts'
     | '/interviews'
     | '/offers'
     | '/referrals'
@@ -191,6 +220,7 @@ export interface FileRouteTypes {
     | '/candidates/'
     | '/pipeline/'
     | '/requisitions/'
+    | '/candidates/$id/scorecard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -198,8 +228,10 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/announcements'
     | '/audit'
+    | '/background-checks'
     | '/careers'
     | '/conversion'
+    | '/forecasts'
     | '/interviews'
     | '/offers'
     | '/referrals'
@@ -210,6 +242,7 @@ export interface FileRouteTypes {
     | '/candidates'
     | '/pipeline'
     | '/requisitions'
+    | '/candidates/$id/scorecard'
   id:
     | '__root__'
     | '/'
@@ -217,8 +250,10 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/announcements'
     | '/audit'
+    | '/background-checks'
     | '/careers'
     | '/conversion'
+    | '/forecasts'
     | '/interviews'
     | '/offers'
     | '/referrals'
@@ -229,6 +264,7 @@ export interface FileRouteTypes {
     | '/candidates/'
     | '/pipeline/'
     | '/requisitions/'
+    | '/candidates/$id/scorecard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -237,13 +273,15 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   AnnouncementsRoute: typeof AnnouncementsRoute
   AuditRoute: typeof AuditRoute
+  BackgroundChecksRoute: typeof BackgroundChecksRoute
   CareersRoute: typeof CareersRoute
   ConversionRoute: typeof ConversionRoute
+  ForecastsRoute: typeof ForecastsRoute
   InterviewsRoute: typeof InterviewsRoute
   OffersRoute: typeof OffersRoute
   ReferralsRoute: typeof ReferralsRoute
   SettingsRoute: typeof SettingsRoute
-  CandidatesIdRoute: typeof CandidatesIdRoute
+  CandidatesIdRoute: typeof CandidatesIdRouteWithChildren
   PipelineReqIdRoute: typeof PipelineReqIdRoute
   RequisitionsIdRoute: typeof RequisitionsIdRoute
   CandidatesIndexRoute: typeof CandidatesIndexRoute
@@ -281,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InterviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forecasts': {
+      id: '/forecasts'
+      path: '/forecasts'
+      fullPath: '/forecasts'
+      preLoaderRoute: typeof ForecastsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conversion': {
       id: '/conversion'
       path: '/conversion'
@@ -293,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/careers'
       fullPath: '/careers'
       preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/background-checks': {
+      id: '/background-checks'
+      path: '/background-checks'
+      fullPath: '/background-checks'
+      preLoaderRoute: typeof BackgroundChecksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audit': {
@@ -372,8 +424,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CandidatesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/candidates/$id/scorecard': {
+      id: '/candidates/$id/scorecard'
+      path: '/scorecard'
+      fullPath: '/candidates/$id/scorecard'
+      preLoaderRoute: typeof CandidatesIdScorecardRouteImport
+      parentRoute: typeof CandidatesIdRoute
+    }
   }
 }
+
+interface CandidatesIdRouteChildren {
+  CandidatesIdScorecardRoute: typeof CandidatesIdScorecardRoute
+}
+
+const CandidatesIdRouteChildren: CandidatesIdRouteChildren = {
+  CandidatesIdScorecardRoute: CandidatesIdScorecardRoute,
+}
+
+const CandidatesIdRouteWithChildren = CandidatesIdRoute._addFileChildren(
+  CandidatesIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -381,13 +452,15 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   AnnouncementsRoute: AnnouncementsRoute,
   AuditRoute: AuditRoute,
+  BackgroundChecksRoute: BackgroundChecksRoute,
   CareersRoute: CareersRoute,
   ConversionRoute: ConversionRoute,
+  ForecastsRoute: ForecastsRoute,
   InterviewsRoute: InterviewsRoute,
   OffersRoute: OffersRoute,
   ReferralsRoute: ReferralsRoute,
   SettingsRoute: SettingsRoute,
-  CandidatesIdRoute: CandidatesIdRoute,
+  CandidatesIdRoute: CandidatesIdRouteWithChildren,
   PipelineReqIdRoute: PipelineReqIdRoute,
   RequisitionsIdRoute: RequisitionsIdRoute,
   CandidatesIndexRoute: CandidatesIndexRoute,
@@ -397,3 +470,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
