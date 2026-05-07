@@ -6,7 +6,8 @@ import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
 import { candidateById, reqById, submitScorecard, finalizeScorecard, aggregateScorecards, type Scorecard } from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
-import { ArrowLeft, Star, Lock } from "lucide-react";
+import { useCurrentUser, CAN } from "@/lib/role";
+import { ArrowLeft, Star, Lock, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/candidates/$id/scorecard")({
@@ -72,12 +73,18 @@ function ScorecardForm() {
     setFocus(f); setScores(COMPETENCIES_BY_FOCUS[f].map(() => 3));
   };
 
+  const me = useCurrentUser();
+  const canSubmit = CAN.submitScorecard(me.role);
+  const canFinalize = CAN.finalizeScorecard(me.role);
+
   const submit = (alsoFinalize: boolean) => {
+    if (!canSubmit) { toast.error("Your role cannot submit scorecards"); return; }
+    if (alsoFinalize && !canFinalize) { toast.error("Only interviewers, recruiters or TA leads can finalize"); return; }
     const parsed = schema.safeParse({ interviewerName, focus, scores, notes, recommendation: rec });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     if (alsoFinalize && signature.trim().length < 3) { toast.error("Type your full name to sign off"); return; }
     submitScorecard(c.id, {
-      interviewerId: "EMP-1004",
+      interviewerId: me.id,
       interviewerName,
       focus,
       competencies: comps.map((cm, i) => ({ label: cm.label, score: scores[i] as 1|2|3|4|5 })),
@@ -178,10 +185,11 @@ function ScorecardForm() {
             <input value={signature} onChange={e => setSignature(e.target.value)} placeholder="Type your full name to sign" className="h-9 w-full px-3 rounded-md border border-border bg-card text-sm" />
           </div>
 
+          {!canSubmit && <div className="rounded-md border border-warning/40 bg-warning/5 p-3 text-xs flex items-start gap-2"><ShieldAlert className="h-4 w-4 text-warning shrink-0" /> Your role (<span className="font-mono">{me.role}</span>) cannot submit scorecards.</div>}
           <div className="flex justify-end gap-2">
             <Link to="/candidates/$id" params={{ id: c.id }} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-medium">Cancel</Link>
-            <button onClick={() => submit(false)} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-semibold">Save draft</button>
-            <button onClick={() => submit(true)} className="inline-flex items-center gap-1.5 px-5 h-10 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-semibold"><Lock className="h-4 w-4" /> Finalize & sign</button>
+            <button onClick={() => submit(false)} disabled={!canSubmit} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-semibold disabled:opacity-40">Save draft</button>
+            <button onClick={() => submit(true)} disabled={!canSubmit || !canFinalize} className="inline-flex items-center gap-1.5 px-5 h-10 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-semibold disabled:opacity-40"><Lock className="h-4 w-4" /> Finalize & sign</button>
           </div>
         </div>
 

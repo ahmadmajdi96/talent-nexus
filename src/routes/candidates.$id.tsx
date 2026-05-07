@@ -227,9 +227,12 @@ function HiringManagerDecision({ candidateId }: { candidateId: string }) {
   const [decision, setDecision] = useState<HiringDecision["decision"]>("ADVANCE");
   const [rationale, setRationale] = useState("");
   const decisions = decisionsByCandidate(candidateId);
+  const me = require("@/lib/role").useCurrentUser() as ReturnType<typeof import("@/lib/role").useCurrentUser>;
+  const canDecide = require("@/lib/role").CAN.recordHiringDecision(me.role);
   const submit = () => {
+    if (!canDecide) { toast.error("Only the hiring manager (or TA Lead) can record final hiring decisions"); return; }
     if (rationale.trim().length < 10) { toast.error("Rationale required (10+ chars) for audit log"); return; }
-    recordHiringDecision({ candidateId, decidedBy: "Marcus Lindberg", decidedById: "EMP-1004", decision, rationale });
+    recordHiringDecision({ candidateId, decidedBy: me.name, decidedById: me.id, decision, rationale });
     setRationale("");
     toast.success(`Decision recorded: ${decision}`);
   };
