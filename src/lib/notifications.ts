@@ -25,12 +25,28 @@ export interface Notification {
 
 const listeners = new Set<() => void>();
 let version = 0;
-const bump = () => { version++; listeners.forEach(l => l()); };
+const STORAGE_KEY = "hireflow.notifications.v1";
+
+function loadPersisted(): Notification[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw) as Notification[];
+    // Reset terminal "RETRYING" states left over from an unloaded page
+    return arr.map(n => n.status === "RETRYING" ? { ...n, status: "FAILED" as NotifStatus } : n);
+  } catch { return []; }
+}
+function persist() {
+  if (typeof window === "undefined") return;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications.slice(0, 200))); } catch {}
+}
+const bump = () => { version++; persist(); listeners.forEach(l => l()); };
 const subscribe = (l: () => void) => { listeners.add(l); return () => listeners.delete(l); };
 const getSnap = () => version;
 export const useNotifications = () => useSyncExternalStore(subscribe, getSnap, getSnap);
 
-export const notifications: Notification[] = [];
+export const notifications: Notification[] = loadPersisted();
 
 const nowIso = () => new Date().toISOString().replace("T", " ").slice(0, 19);
 const newId = () => `NTF-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
