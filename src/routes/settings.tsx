@@ -6,7 +6,7 @@ import { Settings2, Shield, Globe2, Users } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [
-    { title: "Settings — HireFlow" },
+    { title: "Settings — CORTA Acquisition" },
     { name: "description", content: "Approval rules, integrations, role-based access, compliance policies." },
   ]}),
   component: SettingsPage,

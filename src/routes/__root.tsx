@@ -73,10 +73,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "HireFlow — Talent Acquisition" },
-      { name: "description", content: "HireFlow is the end-to-end talent acquisition platform of CoreFlow Nexus. Manage requisitions, candidates, interviews, offers and CoreHR conversion." },
+      { title: "CORTA Acquisition — Talent Acquisition" },
+      { name: "description", content: "CORTA Acquisition is the end-to-end talent acquisition platform of CoreFlow Nexus. Manage requisitions, candidates, interviews, offers and CoreHR conversion." },
       { name: "author", content: "CoreFlow" },
-      { property: "og:title", content: "HireFlow — Talent Acquisition" },
+      { property: "og:title", content: "CORTA Acquisition — Talent Acquisition" },
       { property: "og:description", content: "Requisitions, pipeline, interviews, offers — connected to CoreHR." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

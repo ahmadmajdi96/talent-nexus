@@ -7,7 +7,7 @@ import type { Role } from "./role";
 
 export const REMINDER_LEAD_MS_DEFAULT = 24 * 60 * 60 * 1000;
 const TICK_MS = 60 * 1000;
-const FIRED_KEY = "hireflow.reminders.fired.v1";
+const FIRED_KEY = "corta.reminders.fired.v1";
 
 let timer: ReturnType<typeof setInterval> | null = null;
 

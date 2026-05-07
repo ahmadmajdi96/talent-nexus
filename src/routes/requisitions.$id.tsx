@@ -8,7 +8,7 @@ import { reqById, candidatesByReq, STAGES, STAGE_LABEL } from "@/lib/ta-data";
 
 export const Route = createFileRoute("/requisitions/$id")({
   head: ({ params }) => ({ meta: [
-    { title: `${params.id} — Requisition · HireFlow` },
+    { title: `${params.id} — Requisition · CORTA Acquisition` },
     { name: "description", content: "Requisition detail with approval chain, postings, and candidate funnel." },
   ]}),
   component: ReqDetail,

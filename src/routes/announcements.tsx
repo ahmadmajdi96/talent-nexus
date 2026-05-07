@@ -6,7 +6,7 @@ import { Megaphone } from "lucide-react";
 
 export const Route = createFileRoute("/announcements")({
   head: () => ({ meta: [
-    { title: "TA Announcements — HireFlow" },
+    { title: "TA Announcements — CORTA Acquisition" },
     { name: "description", content: "Updates to the recruiting team — new policies, hiring freezes, employer brand wins." },
   ]}),
   component: Announcements,

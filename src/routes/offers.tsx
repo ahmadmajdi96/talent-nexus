@@ -8,7 +8,7 @@ import { CheckCircle2, Circle, Clock, FileSignature } from "lucide-react";
 
 export const Route = createFileRoute("/offers")({
   head: () => ({ meta: [
-    { title: "Offers — HireFlow" },
+    { title: "Offers — CORTA Acquisition" },
     { name: "description", content: "Generate offers from approved templates, route for compensation/HR/Finance approval, send for digital signature." },
   ]}),
   component: OffersPage,

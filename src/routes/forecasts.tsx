@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/forecasts")({
   head: () => ({ meta: [
-    { title: "WorkGrid Forecasts — HireFlow" },
+    { title: "WorkGrid Forecasts — CORTA Acquisition" },
     { name: "description", content: "Inbound project staffing forecasts from WorkGrid. Convert to requisitions in one click." },
   ]}),
   component: ForecastsPage,

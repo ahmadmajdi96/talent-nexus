@@ -8,7 +8,7 @@ import { UserPlus, Award } from "lucide-react";
 
 export const Route = createFileRoute("/referrals")({
   head: () => ({ meta: [
-    { title: "Referrals — HireFlow" },
+    { title: "Referrals — CORTA Acquisition" },
     { name: "description", content: "Employee referrals and bonus eligibility tracking." },
   ]}),
   component: ReferralsPage,

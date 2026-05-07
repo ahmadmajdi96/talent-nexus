@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({ meta: [
-    { title: "Notifications & Reminders — HireFlow" },
+    { title: "Notifications & Reminders — CORTA Acquisition" },
     { name: "description", content: "Multi-channel notification log and dispute-window reminder scheduler." },
   ]}),
   component: NotificationsPage,

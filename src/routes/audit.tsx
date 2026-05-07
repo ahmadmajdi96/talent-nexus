@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/audit")({
   head: () => ({ meta: [
-    { title: "Audit Log — HireFlow" },
+    { title: "Audit Log — CORTA Acquisition" },
     { name: "description", content: "Tamper-evident audit trail with filters and CSV/PDF export for adverse actions, scorecard locks, hiring decisions and CoreHR handoffs." },
   ]}),
   component: AuditPage,
@@ -63,7 +63,7 @@ function AuditPage() {
     if (!w) return toast.error("Popup blocked");
     const style = `body{font:12px Inter,system-ui;padding:24px;color:#0f172a}h1{font-size:18px;margin:0 0 4px}small{color:#64748b}table{width:100%;border-collapse:collapse;margin-top:14px}th,td{border-bottom:1px solid #e2e8f0;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f8fafc;text-transform:uppercase;font-size:10px;letter-spacing:.05em;color:#475569}td.mono{font-family:JetBrains Mono,monospace;font-size:11px}`;
     const tableRows = rows.map(r => `<tr><td class="mono">${r.at}</td><td>${r.entity}<div class="mono" style="color:#64748b">${r.entityId}</div></td><td>${r.action.replace(/_/g, " ")}</td><td>${r.actor}</td><td>${r.text.replace(/</g, "&lt;")}</td></tr>`).join("");
-    w.document.write(`<!doctype html><html><head><title>HireFlow Audit Export</title><style>${style}</style></head><body><h1>HireFlow Audit Log Export</h1><small>Generated ${new Date().toISOString()} · ${rows.length} entries · Filters: group=${group}, candidate=${candidate}, req=${req}, q="${q}"</small><table><thead><tr><th>When</th><th>Entity</th><th>Action</th><th>Actor</th><th>Detail</th></tr></thead><tbody>${tableRows}</tbody></table><script>window.onload=()=>window.print();</script></body></html>`);
+    w.document.write(`<!doctype html><html><head><title>CORTA Acquisition Audit Export</title><style>${style}</style></head><body><h1>CORTA Acquisition Audit Log Export</h1><small>Generated ${new Date().toISOString()} · ${rows.length} entries · Filters: group=${group}, candidate=${candidate}, req=${req}, q="${q}"</small><table><thead><tr><th>When</th><th>Entity</th><th>Action</th><th>Actor</th><th>Detail</th></tr></thead><tbody>${tableRows}</tbody></table><script>window.onload=()=>window.print();</script></body></html>`);
     w.document.close();
     toast.success("Opened printable PDF view");
   };

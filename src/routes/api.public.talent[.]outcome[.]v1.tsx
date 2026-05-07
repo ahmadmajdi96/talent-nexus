@@ -27,7 +27,7 @@ export const Route = createFileRoute("/api/public/talent.outcome.v1")({
           }));
         const body = {
           version: "talent.outcome.v1",
-          source: "HireFlow",
+          source: "CORTA Acquisition",
           generatedAt: new Date().toISOString(),
           count: items.length,
           items,

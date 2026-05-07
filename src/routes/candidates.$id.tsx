@@ -12,7 +12,7 @@ import { useCurrentUser, CAN } from "@/lib/role";
 
 export const Route = createFileRoute("/candidates/$id")({
   head: ({ params }) => ({ meta: [
-    { title: `${params.id} — Candidate · HireFlow` },
+    { title: `${params.id} — Candidate · CORTA Acquisition` },
     { name: "description", content: "Candidate profile, scorecards, interview timeline and offer status." },
   ]}),
   component: CandidateDetail,

@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/background-checks")({
   head: () => ({ meta: [
-    { title: "Background Checks — HireFlow" },
+    { title: "Background Checks — CORTA Acquisition" },
     { name: "description", content: "FCRA-compliant background check workflow with vendor request/response tracking and recruiter notifications." },
   ]}),
   component: BgPage,

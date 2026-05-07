@@ -26,7 +26,7 @@ export interface Notification {
 
 const listeners = new Set<() => void>();
 let version = 0;
-const STORAGE_KEY = "hireflow.notifications.v1";
+const STORAGE_KEY = "corta.notifications.v1";
 
 function loadPersisted(): Notification[] {
   if (typeof window === "undefined") return [];
