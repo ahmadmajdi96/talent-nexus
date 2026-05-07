@@ -3,8 +3,9 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Briefcase, LayoutDashboard, Users2, Kanban, CalendarCheck2, FileSignature,
   Megaphone, BarChart3, Settings2, FileText, BellRing, Search, LogOut,
-  UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles,
+  UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles, Bell, Share2,
 } from "lucide-react";
+import { useCurrentUser, setCurrentUser, listUserPresets } from "@/lib/role";
 
 type Item = { to: string; label: string; icon: any };
 const sections: { label: string; items: Item[] }[] = [
@@ -30,9 +31,11 @@ const sections: { label: string; items: Item[] }[] = [
   { label: "Insights", items: [
     { to: "/analytics", label: "Recruitment Analytics", icon: BarChart3 },
     { to: "/announcements", label: "TA Announcements", icon: Megaphone },
+    { to: "/people-hub-feed", label: "People Hub Feed", icon: Share2 },
   ]},
   { label: "Administration", items: [
     { to: "/audit", label: "Audit Log", icon: FileText },
+    { to: "/notifications", label: "Notifications", icon: Bell },
     { to: "/settings", label: "Settings", icon: Settings2 },
   ]},
 ];

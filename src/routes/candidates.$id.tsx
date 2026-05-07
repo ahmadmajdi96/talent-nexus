@@ -8,6 +8,7 @@ import { ArrowLeft, Mail, Phone, MapPin, FileText, Star, ShieldCheck, Calendar, 
 import { candidateById, reqById, offersByCandidate, interviews, STAGE_LABEL, bgChecksByCandidate, conversionByCandidate, aggregateScorecards, retryConversion, conversionDeliveries, recordHiringDecision, decisionsByCandidate, type HiringDecision } from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
 import { toast } from "sonner";
+import { useCurrentUser, CAN } from "@/lib/role";
 
 export const Route = createFileRoute("/candidates/$id")({
   head: ({ params }) => ({ meta: [
@@ -227,8 +228,8 @@ function HiringManagerDecision({ candidateId }: { candidateId: string }) {
   const [decision, setDecision] = useState<HiringDecision["decision"]>("ADVANCE");
   const [rationale, setRationale] = useState("");
   const decisions = decisionsByCandidate(candidateId);
-  const me = require("@/lib/role").useCurrentUser() as ReturnType<typeof import("@/lib/role").useCurrentUser>;
-  const canDecide = require("@/lib/role").CAN.recordHiringDecision(me.role);
+  const me = useCurrentUser();
+  const canDecide = CAN.recordHiringDecision(me.role);
   const submit = () => {
     if (!canDecide) { toast.error("Only the hiring manager (or TA Lead) can record final hiring decisions"); return; }
     if (rationale.trim().length < 10) { toast.error("Rationale required (10+ chars) for audit log"); return; }
