@@ -120,15 +120,17 @@ function BgPage() {
                 {b.vendorResponse.reportUrl && <a href={b.vendorResponse.reportUrl} className="text-primary text-xs inline-flex items-center gap-1 mt-1"><FileText className="h-3 w-3" /> Full report</a>}
               </div>}
 
-              <AdverseActionPanel bgcId={b.id} aa={b.adverseAction} status={b.status} />
+              <AdverseActionPanel bgcId={b.id} aa={b.adverseAction} status={b.status} canDecide={canDecide} />
 
-              <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
+              <div className="flex flex-wrap gap-2 pt-3 border-t border-border items-center">
                 {(["IN_PROGRESS","CLEAR","ADVERSE_ACTION","CANCELLED"] as BgCheckStatus[]).map(s => (
-                  <button key={s} onClick={() => advance(b.id, s)} disabled={b.status === s}
-                    className="text-xs font-medium px-3 h-8 rounded-md border border-border bg-card hover:bg-muted disabled:opacity-40">
-                    Mark {s.replace("_"," ")}
+                  <button key={s} onClick={() => advance(b.id, s)} disabled={b.status === s || !canManage}
+                    title={!canManage ? `Locked — ${me.role.replace("_"," ")} cannot modify` : undefined}
+                    className="text-xs font-medium px-3 h-8 rounded-md border border-border bg-card hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1">
+                    {!canManage && <Lock className="h-3 w-3" />} Mark {s.replace("_"," ")}
                   </button>
                 ))}
+                {!canManage && <span className="text-[11px] text-muted-foreground inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Switch to Recruiter or TA Lead to modify</span>}
               </div>
             </div>
           );
