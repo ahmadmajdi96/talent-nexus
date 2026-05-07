@@ -144,7 +144,7 @@ function Field({ label, value }: { label: string; value?: string }) {
   return <div className="text-xs"><div className="text-muted-foreground">{label}</div><div className="font-medium">{value || <span className="text-destructive">—</span>}</div></div>;
 }
 
-function AdverseActionPanel({ bgcId, aa, status }: { bgcId: string; aa?: import("@/lib/ta-data").AdverseAction; status: BgCheckStatus }) {
+function AdverseActionPanel({ bgcId, aa, status, canDecide }: { bgcId: string; aa?: import("@/lib/ta-data").AdverseAction; status: BgCheckStatus; canDecide: boolean }) {
   const [reasons, setReasons] = useState<string[]>([]);
   const [dispute, setDispute] = useState("");
   const [decision, setDecision] = useState<"WITHDRAWN" | "RESCINDED_OFFER" | "PROCEED">("RESCINDED_OFFER");
@@ -165,9 +165,11 @@ function AdverseActionPanel({ bgcId, aa, status }: { bgcId: string; aa?: import(
               className={`text-[11px] px-2 h-7 rounded-md border ${reasons.includes(r) ? "bg-destructive text-destructive-foreground border-destructive" : "bg-card border-border hover:bg-muted"}`}>{r}</button>
           ))}
         </div>
-        <button disabled={reasons.length === 0} onClick={() => { startAdverseAction(bgcId, reasons); toast.success("Pre-adverse notice sent — dispute window open"); }}
-          className="text-xs font-semibold px-3 h-8 rounded-md bg-destructive text-destructive-foreground disabled:opacity-40">
-          Issue pre-adverse notice
+        <button disabled={reasons.length === 0 || !canDecide}
+          onClick={() => { startAdverseAction(bgcId, reasons); toast.success("Pre-adverse notice sent — dispute window open"); }}
+          title={!canDecide ? "Locked — your role cannot issue adverse-action notices" : undefined}
+          className="text-xs font-semibold px-3 h-8 rounded-md bg-destructive text-destructive-foreground disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1">
+          {!canDecide && <Lock className="h-3 w-3" />} Issue pre-adverse notice
         </button>
       </div>
     );
@@ -203,8 +205,12 @@ function AdverseActionPanel({ bgcId, aa, status }: { bgcId: string; aa?: import(
             ))}
           </div>
           <textarea value={rationale} onChange={e => setRationale(e.target.value)} rows={2} placeholder="Decision rationale (required for audit)…" className="w-full p-2 rounded-md border border-border bg-card text-xs" />
-          <button disabled={rationale.trim().length < 10} onClick={() => { decideAdverseAction(bgcId, decision, rationale); toast.success(`Decision recorded: ${decision}`); }}
-            className="mt-1 text-xs font-semibold px-3 h-7 rounded-md bg-primary text-primary-foreground disabled:opacity-40">Record decision</button>
+          <button disabled={rationale.trim().length < 10 || !canDecide}
+            onClick={() => { decideAdverseAction(bgcId, decision, rationale); toast.success(`Decision recorded: ${decision}`); }}
+            title={!canDecide ? "Locked — your role cannot record adverse-action decisions" : undefined}
+            className="mt-1 text-xs font-semibold px-3 h-7 rounded-md bg-primary text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1">
+            {!canDecide && <Lock className="h-3 w-3" />} Record decision
+          </button>
         </div>
       )}
       {aa.decision && (
