@@ -465,9 +465,15 @@ export function buildConversionPayload(candidateId: string): CoreHRConversionPay
   };
 }
 
+export function makeIdempotencyKey(candidateId: string, offerId: string) {
+  return `chired:${candidateId}:${offerId}`;
+}
+
 export const conversionEvents: ConversionEvent[] = [
   {
-    id: "EVT-2026-0009", candidateId: "C-0042", candidateName: "Reina Patel", reqId: "REQ-2026-0088", offerId: "OFR-2026-0016",
+    id: "EVT-2026-0009",
+    idempotencyKey: makeIdempotencyKey("C-0042", "OFR-2026-0016"),
+    candidateId: "C-0042", candidateName: "Reina Patel", reqId: "REQ-2026-0088", offerId: "OFR-2026-0016",
     acceptedAt: "2026-04-26 14:02", status: "EMPLOYEE_CREATED", newEmployeeId: "EMP-1085",
     payload: buildConversionPayload("C-0042")!,
   },
