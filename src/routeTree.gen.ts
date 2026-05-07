@@ -32,7 +32,7 @@ import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
 import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 import { Route as CandidatesIdScorecardRouteImport } from './routes/candidates.$id.scorecard'
-import { Route as ApiPublicTalentOutcomeV1RouteImport } from './routes/api.public.talent.outcome.v1'
+import { Route as ApiPublicTalentDotoutcomeDotv1RouteImport } from './routes/api.public.talent[.]outcome[.]v1'
 
 const VendorSimRoute = VendorSimRouteImport.update({
   id: '/vendor-sim',
@@ -149,10 +149,10 @@ const CandidatesIdScorecardRoute = CandidatesIdScorecardRouteImport.update({
   path: '/scorecard',
   getParentRoute: () => CandidatesIdRoute,
 } as any)
-const ApiPublicTalentOutcomeV1Route =
-  ApiPublicTalentOutcomeV1RouteImport.update({
-    id: '/api/public/talent/outcome/v1',
-    path: '/api/public/talent/outcome/v1',
+const ApiPublicTalentDotoutcomeDotv1Route =
+  ApiPublicTalentDotoutcomeDotv1RouteImport.update({
+    id: '/api/public/talent.outcome.v1',
+    path: '/api/public/talent.outcome.v1',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -179,8 +179,8 @@ export interface FileRoutesByFullPath {
   '/candidates/': typeof CandidatesIndexRoute
   '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
+  '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
-  '/api/public/talent/outcome/v1': typeof ApiPublicTalentOutcomeV1Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -205,8 +205,8 @@ export interface FileRoutesByTo {
   '/candidates': typeof CandidatesIndexRoute
   '/pipeline': typeof PipelineIndexRoute
   '/requisitions': typeof RequisitionsIndexRoute
+  '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
-  '/api/public/talent/outcome/v1': typeof ApiPublicTalentOutcomeV1Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -232,8 +232,8 @@ export interface FileRoutesById {
   '/candidates/': typeof CandidatesIndexRoute
   '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
+  '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
-  '/api/public/talent/outcome/v1': typeof ApiPublicTalentOutcomeV1Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -260,8 +260,8 @@ export interface FileRouteTypes {
     | '/candidates/'
     | '/pipeline/'
     | '/requisitions/'
+    | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
-    | '/api/public/talent/outcome/v1'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -286,8 +286,8 @@ export interface FileRouteTypes {
     | '/candidates'
     | '/pipeline'
     | '/requisitions'
+    | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
-    | '/api/public/talent/outcome/v1'
   id:
     | '__root__'
     | '/'
@@ -312,8 +312,8 @@ export interface FileRouteTypes {
     | '/candidates/'
     | '/pipeline/'
     | '/requisitions/'
+    | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
-    | '/api/public/talent/outcome/v1'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -339,7 +339,7 @@ export interface RootRouteChildren {
   CandidatesIndexRoute: typeof CandidatesIndexRoute
   PipelineIndexRoute: typeof PipelineIndexRoute
   RequisitionsIndexRoute: typeof RequisitionsIndexRoute
-  ApiPublicTalentOutcomeV1Route: typeof ApiPublicTalentOutcomeV1Route
+  ApiPublicTalentDotoutcomeDotv1Route: typeof ApiPublicTalentDotoutcomeDotv1Route
 }
 
 declare module '@tanstack/react-router' {
@@ -505,11 +505,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CandidatesIdScorecardRouteImport
       parentRoute: typeof CandidatesIdRoute
     }
-    '/api/public/talent/outcome/v1': {
-      id: '/api/public/talent/outcome/v1'
-      path: '/api/public/talent/outcome/v1'
-      fullPath: '/api/public/talent/outcome/v1'
-      preLoaderRoute: typeof ApiPublicTalentOutcomeV1RouteImport
+    '/api/public/talent.outcome.v1': {
+      id: '/api/public/talent.outcome.v1'
+      path: '/api/public/talent.outcome.v1'
+      fullPath: '/api/public/talent.outcome.v1'
+      preLoaderRoute: typeof ApiPublicTalentDotoutcomeDotv1RouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -550,7 +550,7 @@ const rootRouteChildren: RootRouteChildren = {
   CandidatesIndexRoute: CandidatesIndexRoute,
   PipelineIndexRoute: PipelineIndexRoute,
   RequisitionsIndexRoute: RequisitionsIndexRoute,
-  ApiPublicTalentOutcomeV1Route: ApiPublicTalentOutcomeV1Route,
+  ApiPublicTalentDotoutcomeDotv1Route: ApiPublicTalentDotoutcomeDotv1Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

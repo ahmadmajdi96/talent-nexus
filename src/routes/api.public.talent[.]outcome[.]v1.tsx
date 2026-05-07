@@ -8,7 +8,7 @@ const CORS = {
   "Access-Control-Max-Age": "86400",
 };
 
-export const Route = createFileRoute("/api/public/talent/outcome/v1")({
+export const Route = createFileRoute("/api/public/talent.outcome.v1")({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
