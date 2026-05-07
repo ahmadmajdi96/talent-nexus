@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VendorSimRouteImport } from './routes/vendor-sim'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as OffersRouteImport } from './routes/offers'
@@ -30,6 +31,11 @@ import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 import { Route as CandidatesIdScorecardRouteImport } from './routes/candidates.$id.scorecard'
 
+const VendorSimRoute = VendorSimRouteImport.update({
+  id: '/vendor-sim',
+  path: '/vendor-sim',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/offers': typeof OffersRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
+  '/vendor-sim': typeof VendorSimRoute
   '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/offers': typeof OffersRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
+  '/vendor-sim': typeof VendorSimRoute
   '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/offers': typeof OffersRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
+  '/vendor-sim': typeof VendorSimRoute
   '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/offers'
     | '/referrals'
     | '/settings'
+    | '/vendor-sim'
     | '/candidates/$id'
     | '/pipeline/$reqId'
     | '/requisitions/$id'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/offers'
     | '/referrals'
     | '/settings'
+    | '/vendor-sim'
     | '/candidates/$id'
     | '/pipeline/$reqId'
     | '/requisitions/$id'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/offers'
     | '/referrals'
     | '/settings'
+    | '/vendor-sim'
     | '/candidates/$id'
     | '/pipeline/$reqId'
     | '/requisitions/$id'
@@ -281,6 +293,7 @@ export interface RootRouteChildren {
   OffersRoute: typeof OffersRoute
   ReferralsRoute: typeof ReferralsRoute
   SettingsRoute: typeof SettingsRoute
+  VendorSimRoute: typeof VendorSimRoute
   CandidatesIdRoute: typeof CandidatesIdRouteWithChildren
   PipelineReqIdRoute: typeof PipelineReqIdRoute
   RequisitionsIdRoute: typeof RequisitionsIdRoute
@@ -291,6 +304,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vendor-sim': {
+      id: '/vendor-sim'
+      path: '/vendor-sim'
+      fullPath: '/vendor-sim'
+      preLoaderRoute: typeof VendorSimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -460,6 +480,7 @@ const rootRouteChildren: RootRouteChildren = {
   OffersRoute: OffersRoute,
   ReferralsRoute: ReferralsRoute,
   SettingsRoute: SettingsRoute,
+  VendorSimRoute: VendorSimRoute,
   CandidatesIdRoute: CandidatesIdRouteWithChildren,
   PipelineReqIdRoute: PipelineReqIdRoute,
   RequisitionsIdRoute: RequisitionsIdRoute,

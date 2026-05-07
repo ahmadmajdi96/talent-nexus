@@ -1,10 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
-import { backgroundChecks, candidateById, advanceBackgroundCheck, type BgCheckStatus } from "@/lib/ta-data";
+import {
+  backgroundChecks, candidateById, advanceBackgroundCheck,
+  startAdverseAction, disputeAdverseAction, decideAdverseAction,
+  ADVERSE_ACTION_REASONS, type BgCheckStatus,
+} from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
-import { ShieldCheck, Mail, FileText, Bell } from "lucide-react";
+import { ShieldCheck, Mail, FileText, Bell, AlertTriangle, Gavel } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/background-checks")({
