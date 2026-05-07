@@ -172,9 +172,16 @@ function ScorecardForm() {
             </div>
           </div>
 
+          <div className="page-section p-5">
+            <div className="font-semibold mb-2 flex items-center gap-2"><Lock className="h-4 w-4 text-primary" /> Sign off & finalize</div>
+            <div className="text-xs text-muted-foreground mb-2">Type your full legal name to e-sign. Finalized scorecards become read-only and cannot be edited — they are entered into the immutable audit log.</div>
+            <input value={signature} onChange={e => setSignature(e.target.value)} placeholder="Type your full name to sign" className="h-9 w-full px-3 rounded-md border border-border bg-card text-sm" />
+          </div>
+
           <div className="flex justify-end gap-2">
             <Link to="/candidates/$id" params={{ id: c.id }} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-medium">Cancel</Link>
-            <button onClick={submit} className="inline-flex items-center px-5 h-10 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-semibold">Submit scorecard</button>
+            <button onClick={() => submit(false)} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-semibold">Save draft</button>
+            <button onClick={() => submit(true)} className="inline-flex items-center gap-1.5 px-5 h-10 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-semibold"><Lock className="h-4 w-4" /> Finalize & sign</button>
           </div>
         </div>
 
