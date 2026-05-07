@@ -222,3 +222,38 @@ function CandidateDetail() {
     </AppShell>
   );
 }
+
+function HiringManagerDecision({ candidateId }: { candidateId: string }) {
+  const [decision, setDecision] = useState<HiringDecision["decision"]>("ADVANCE");
+  const [rationale, setRationale] = useState("");
+  const decisions = decisionsByCandidate(candidateId);
+  const submit = () => {
+    if (rationale.trim().length < 10) { toast.error("Rationale required (10+ chars) for audit log"); return; }
+    recordHiringDecision({ candidateId, decidedBy: "Marcus Lindberg", decidedById: "EMP-1004", decision, rationale });
+    setRationale("");
+    toast.success(`Decision recorded: ${decision}`);
+  };
+  return (
+    <div className="page-section p-5">
+      <div className="font-semibold mb-1 flex items-center gap-2"><Gavel className="h-4 w-4 text-primary" /> Hiring manager decision</div>
+      <div className="text-xs text-muted-foreground mb-3">Records to the audit log and updates candidate stage. Visible to HR + recruiter.</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
+        {(["ADVANCE","HIRE","REJECT","HOLD"] as const).map(d => (
+          <button key={d} onClick={() => setDecision(d)} type="button"
+            className={`h-9 rounded-md border text-xs font-semibold ${decision === d ? "bg-primary text-primary-foreground border-primary" : "border-border bg-card hover:bg-muted"}`}>{d}</button>
+        ))}
+      </div>
+      <textarea value={rationale} onChange={e => setRationale(e.target.value)} rows={2} placeholder="Decision rationale (required for audit)…" className="w-full p-2 rounded-md border border-border bg-card text-xs mb-2" />
+      <button onClick={submit} className="text-xs font-semibold px-4 h-9 rounded-md bg-primary text-primary-foreground hover:opacity-90">Record decision</button>
+      {decisions.length > 0 && <div className="mt-4 border-t border-border pt-3 space-y-1.5">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Past decisions</div>
+        {decisions.map((d, i) => (
+          <div key={i} className="text-xs flex items-start gap-2">
+            <Pill tone={d.decision === "HIRE" ? "success" : d.decision === "REJECT" ? "destructive" : d.decision === "HOLD" ? "warning" : "primary"}>{d.decision}</Pill>
+            <div className="flex-1"><span className="text-muted-foreground">{d.decidedAt} · {d.decidedBy}</span><div className="italic">"{d.rationale}"</div></div>
+          </div>
+        ))}
+      </div>}
+    </div>
+  );
+}
