@@ -100,8 +100,8 @@ function CandidateDetail() {
                     <div className="flex items-center gap-2">
                       <Avatar name={s.interviewerName} size={28} />
                       <div>
-                        <div className="text-sm font-medium">{s.interviewerName}</div>
-                        <div className="text-[11px] text-muted-foreground">{s.focus} · {s.submittedAt}</div>
+                        <div className="text-sm font-medium flex items-center gap-1.5">{s.interviewerName} {s.finalized && <Pill tone="success"><Lock className="h-2.5 w-2.5" /> Locked</Pill>}</div>
+                        <div className="text-[11px] text-muted-foreground">{s.focus} · {s.submittedAt}{s.signature && <> · signed by {s.signature}</>}</div>
                       </div>
                     </div>
                     <Pill tone={s.recommendation.includes("STRONG_HIRE") ? "success" : s.recommendation === "HIRE" ? "primary" : "destructive"}>{s.recommendation.replace("_"," ")}</Pill>
@@ -119,6 +119,8 @@ function CandidateDetail() {
               ))}
             </div>
           </div>
+
+          <HiringManagerDecision candidateId={c.id} />
 
           <div className="page-section p-5">
             <div className="font-semibold mb-3">Activity timeline</div>
