@@ -32,6 +32,7 @@ const sections: { label: string; items: Item[] }[] = [
     { to: "/analytics", label: "Recruitment Analytics", icon: BarChart3 },
     { to: "/announcements", label: "TA Announcements", icon: Megaphone },
     { to: "/people-hub-feed", label: "People Hub Feed", icon: Share2 },
+    { to: "/showcase", label: "AI Showcase", icon: Sparkles },
   ]},
   { label: "Administration", items: [
     { to: "/audit", label: "Audit Log", icon: FileText },

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VendorSimRouteImport } from './routes/vendor-sim'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as PeopleHubFeedRouteImport } from './routes/people-hub-feed'
@@ -34,10 +35,16 @@ import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 import { Route as CandidatesIdScorecardRouteImport } from './routes/candidates.$id.scorecard'
 import { Route as ApiPublicTalentDotoutcomeDotv1RouteImport } from './routes/api.public.talent[.]outcome[.]v1'
+import { Route as ApiPublicAiGenerateJdRouteImport } from './routes/api.public.ai.generate-jd'
 
 const VendorSimRoute = VendorSimRouteImport.update({
   id: '/vendor-sim',
   path: '/vendor-sim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -161,6 +168,11 @@ const ApiPublicTalentDotoutcomeDotv1Route =
     path: '/api/public/talent.outcome.v1',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicAiGenerateJdRoute = ApiPublicAiGenerateJdRouteImport.update({
+  id: '/api/public/ai/generate-jd',
+  path: '/api/public/ai/generate-jd',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -179,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
+  '/showcase': typeof ShowcaseRoute
   '/vendor-sim': typeof VendorSimRoute
   '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
@@ -188,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/requisitions/': typeof RequisitionsIndexRoute
   '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
+  '/api/public/ai/generate-jd': typeof ApiPublicAiGenerateJdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -206,6 +220,7 @@ export interface FileRoutesByTo {
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
+  '/showcase': typeof ShowcaseRoute
   '/vendor-sim': typeof VendorSimRoute
   '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
@@ -215,6 +230,7 @@ export interface FileRoutesByTo {
   '/requisitions': typeof RequisitionsIndexRoute
   '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
+  '/api/public/ai/generate-jd': typeof ApiPublicAiGenerateJdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -234,6 +250,7 @@ export interface FileRoutesById {
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
   '/settings': typeof SettingsRoute
+  '/showcase': typeof ShowcaseRoute
   '/vendor-sim': typeof VendorSimRoute
   '/candidates/$id': typeof CandidatesIdRouteWithChildren
   '/pipeline/$reqId': typeof PipelineReqIdRoute
@@ -243,6 +260,7 @@ export interface FileRoutesById {
   '/requisitions/': typeof RequisitionsIndexRoute
   '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
+  '/api/public/ai/generate-jd': typeof ApiPublicAiGenerateJdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -263,6 +281,7 @@ export interface FileRouteTypes {
     | '/people-hub-feed'
     | '/referrals'
     | '/settings'
+    | '/showcase'
     | '/vendor-sim'
     | '/candidates/$id'
     | '/pipeline/$reqId'
@@ -272,6 +291,7 @@ export interface FileRouteTypes {
     | '/requisitions/'
     | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
+    | '/api/public/ai/generate-jd'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -290,6 +310,7 @@ export interface FileRouteTypes {
     | '/people-hub-feed'
     | '/referrals'
     | '/settings'
+    | '/showcase'
     | '/vendor-sim'
     | '/candidates/$id'
     | '/pipeline/$reqId'
@@ -299,6 +320,7 @@ export interface FileRouteTypes {
     | '/requisitions'
     | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
+    | '/api/public/ai/generate-jd'
   id:
     | '__root__'
     | '/'
@@ -317,6 +339,7 @@ export interface FileRouteTypes {
     | '/people-hub-feed'
     | '/referrals'
     | '/settings'
+    | '/showcase'
     | '/vendor-sim'
     | '/candidates/$id'
     | '/pipeline/$reqId'
@@ -326,6 +349,7 @@ export interface FileRouteTypes {
     | '/requisitions/'
     | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
+    | '/api/public/ai/generate-jd'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -345,6 +369,7 @@ export interface RootRouteChildren {
   PeopleHubFeedRoute: typeof PeopleHubFeedRoute
   ReferralsRoute: typeof ReferralsRoute
   SettingsRoute: typeof SettingsRoute
+  ShowcaseRoute: typeof ShowcaseRoute
   VendorSimRoute: typeof VendorSimRoute
   CandidatesIdRoute: typeof CandidatesIdRouteWithChildren
   PipelineReqIdRoute: typeof PipelineReqIdRoute
@@ -353,6 +378,7 @@ export interface RootRouteChildren {
   PipelineIndexRoute: typeof PipelineIndexRoute
   RequisitionsIndexRoute: typeof RequisitionsIndexRoute
   ApiPublicTalentDotoutcomeDotv1Route: typeof ApiPublicTalentDotoutcomeDotv1Route
+  ApiPublicAiGenerateJdRoute: typeof ApiPublicAiGenerateJdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -362,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/vendor-sim'
       fullPath: '/vendor-sim'
       preLoaderRoute: typeof VendorSimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -532,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTalentDotoutcomeDotv1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ai/generate-jd': {
+      id: '/api/public/ai/generate-jd'
+      path: '/api/public/ai/generate-jd'
+      fullPath: '/api/public/ai/generate-jd'
+      preLoaderRoute: typeof ApiPublicAiGenerateJdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -564,6 +604,7 @@ const rootRouteChildren: RootRouteChildren = {
   PeopleHubFeedRoute: PeopleHubFeedRoute,
   ReferralsRoute: ReferralsRoute,
   SettingsRoute: SettingsRoute,
+  ShowcaseRoute: ShowcaseRoute,
   VendorSimRoute: VendorSimRoute,
   CandidatesIdRoute: CandidatesIdRouteWithChildren,
   PipelineReqIdRoute: PipelineReqIdRoute,
@@ -572,6 +613,7 @@ const rootRouteChildren: RootRouteChildren = {
   PipelineIndexRoute: PipelineIndexRoute,
   RequisitionsIndexRoute: RequisitionsIndexRoute,
   ApiPublicTalentDotoutcomeDotv1Route: ApiPublicTalentDotoutcomeDotv1Route,
+  ApiPublicAiGenerateJdRoute: ApiPublicAiGenerateJdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
