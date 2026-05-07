@@ -9,7 +9,7 @@ export interface CurrentUser {
   role: Role;
 }
 
-const KEY = "hireflow.currentUser";
+const KEY = "corta.currentUser";
 
 const DEFAULT: CurrentUser = { id: "EMP-1007", name: "Nora Haddad", role: "RECRUITER" };
 

@@ -8,7 +8,7 @@ import { requisitions, candidates, offers, interviews, conversionEvents, staffin
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
-    { title: "HireFlow — Talent Acquisition Dashboard" },
+    { title: "CORTA Acquisition — Talent Acquisition Dashboard" },
     { name: "description", content: "Real-time hiring pipeline, open requisitions, interviews and offers." },
   ]}),
   component: Dashboard,

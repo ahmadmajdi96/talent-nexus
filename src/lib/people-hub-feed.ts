@@ -1,4 +1,4 @@
-// People Hub outcomes feed — what HireFlow exposes to People Hub (CoreHR).
+// People Hub outcomes feed — what CORTA Acquisition exposes to People Hub (CoreHR).
 // This shape matches what People Hub would consume via the integration bus.
 import { auditLog, candidates, hiringDecisions, conversionEvents, candidateById, reqById } from "./ta-data";
 
@@ -14,7 +14,7 @@ export interface PeopleHubOutcome {
   reqTitle: string;
   summary: string;
   meta?: Record<string, any>;
-  // Deep links back into HireFlow
+  // Deep links back into CORTA Acquisition
   candidateUrl: string;
   requisitionUrl: string;
   // CoreHR mapping (when conversion happened)

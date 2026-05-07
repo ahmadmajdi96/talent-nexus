@@ -6,7 +6,7 @@ import { reqById } from "@/lib/ta-data";
 
 export const Route = createFileRoute("/pipeline/$reqId")({
   head: ({ params }) => ({ meta: [
-    { title: `Pipeline ${params.reqId} — HireFlow` },
+    { title: `Pipeline ${params.reqId} — CORTA Acquisition` },
     { name: "description", content: "Candidate kanban for a specific requisition." },
   ]}),
   component: ReqPipeline,

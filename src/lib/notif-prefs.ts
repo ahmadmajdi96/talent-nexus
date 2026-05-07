@@ -9,7 +9,7 @@ export interface NotifPrefs {
   reminderLeadHoursByRole: Record<Role, number>;
 }
 
-const KEY = "hireflow.notifPrefs.v1";
+const KEY = "corta.notifPrefs.v1";
 
 const DEFAULT: NotifPrefs = {
   channels: { email: true, in_app: true, slack: true },

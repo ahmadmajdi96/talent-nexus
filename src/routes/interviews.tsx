@@ -8,7 +8,7 @@ import { Video, MapPin, Phone, ExternalLink, CheckCircle2, Circle } from "lucide
 
 export const Route = createFileRoute("/interviews")({
   head: () => ({ meta: [
-    { title: "Interviews — HireFlow" },
+    { title: "Interviews — CORTA Acquisition" },
     { name: "description", content: "Scheduled interviews, panel composition and structured scorecard status." },
   ]}),
   component: InterviewsPage,

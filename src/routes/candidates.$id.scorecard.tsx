@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/candidates/$id/scorecard")({
   head: ({ params }) => ({ meta: [
-    { title: `Scorecard ${params.id} — HireFlow` },
+    { title: `Scorecard ${params.id} — CORTA Acquisition` },
     { name: "description", content: "Submit a structured competency-based interview scorecard." },
   ]}),
   component: ScorecardForm,

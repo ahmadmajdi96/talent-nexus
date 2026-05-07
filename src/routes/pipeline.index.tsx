@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/pipeline/")({
   head: () => ({ meta: [
-    { title: "Pipeline — HireFlow" },
+    { title: "Pipeline — CORTA Acquisition" },
     { name: "description", content: "Drag-and-drop kanban view of every candidate stage across requisitions." },
   ]}),
   component: PipelineIndex,

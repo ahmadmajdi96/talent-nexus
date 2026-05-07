@@ -7,7 +7,7 @@ import { Globe2, MapPin, ExternalLink, Smartphone, ShieldCheck } from "lucide-re
 
 export const Route = createFileRoute("/careers")({
   head: () => ({ meta: [
-    { title: "Career Site — HireFlow" },
+    { title: "Career Site — CORTA Acquisition" },
     { name: "description", content: "Public-facing job listings, mobile-responsive application flow, GDPR cookie consent." },
   ]}),
   component: CareersPage,

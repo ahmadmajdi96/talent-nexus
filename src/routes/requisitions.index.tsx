@@ -8,7 +8,7 @@ import { requisitions, type ReqStatus } from "@/lib/ta-data";
 
 export const Route = createFileRoute("/requisitions/")({
   head: () => ({ meta: [
-    { title: "Requisitions — HireFlow" },
+    { title: "Requisitions — CORTA Acquisition" },
     { name: "description", content: "Manage open job requisitions, approval workflows and posting distribution." },
   ]}),
   component: ReqsPage,

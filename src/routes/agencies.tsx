@@ -7,7 +7,7 @@ import { Building2, Star, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/agencies")({
   head: () => ({ meta: [
-    { title: "Agencies — HireFlow" },
+    { title: "Agencies — CORTA Acquisition" },
     { name: "description", content: "Approved recruitment agencies, fees and submission performance." },
   ]}),
   component: AgenciesPage,

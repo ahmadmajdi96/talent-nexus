@@ -8,7 +8,7 @@ import { ArrowUpRight, GitMerge, Users2 } from "lucide-react";
 
 export const Route = createFileRoute("/people-hub-feed")({
   head: () => ({ meta: [
-    { title: "People Hub Feed — HireFlow" },
+    { title: "People Hub Feed — CORTA Acquisition" },
     { name: "description", content: "Hiring outcomes (stage changes, hiring decisions, CoreHR conversions) exposed to People Hub with deep links back to candidates and requisitions." },
   ]}),
   component: PeopleHubFeed,
@@ -29,7 +29,7 @@ function PeopleHubFeed() {
     <AppShell>
       <PageHeader
         title={<span className="flex items-center gap-3">People Hub Feed <Pill tone="success"><GitMerge className="h-3 w-3" /> Live to People Hub</Pill></span>}
-        description="What HireFlow publishes to People Hub. Each outcome carries deep links back to the candidate and requisition for one-click drill-down."
+        description="What CORTA Acquisition publishes to People Hub. Each outcome carries deep links back to the candidate and requisition for one-click drill-down."
       />
 
       <div className="page-section p-4 mb-5 grid grid-cols-2 md:grid-cols-4 gap-4">

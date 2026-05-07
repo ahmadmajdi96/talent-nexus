@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/vendor-sim")({
   head: () => ({ meta: [
-    { title: "Vendor Webhook Simulator — HireFlow" },
+    { title: "Vendor Webhook Simulator — CORTA Acquisition" },
     { name: "description", content: "Replay Checkr/Sterling responses against background checks to verify status transitions and recruiter notifications." },
   ]}),
   component: SimPage,

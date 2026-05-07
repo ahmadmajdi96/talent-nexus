@@ -7,7 +7,7 @@ import { TrendingUp, Clock, Users2, Award } from "lucide-react";
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({ meta: [
-    { title: "Recruitment Analytics — HireFlow" },
+    { title: "Recruitment Analytics — CORTA Acquisition" },
     { name: "description", content: "Funnel conversion, time-to-hire, source-of-hire, diversity metrics, recruiter productivity." },
   ]}),
   component: Analytics,

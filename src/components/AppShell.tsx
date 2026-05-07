@@ -55,7 +55,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             <Briefcase className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <div className="font-bold tracking-tight text-sidebar-foreground">HireFlow</div>
+            <div className="font-bold tracking-tight text-sidebar-foreground">CORTA Acquisition</div>
             <div className="text-[10px] text-sidebar-muted uppercase tracking-wider font-medium">Talent Acquisition · v1.0</div>
           </div>
         </div>

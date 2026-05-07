@@ -1,4 +1,4 @@
-// HireFlow mock data — the talent acquisition source of truth.
+// CORTA Acquisition mock data — the talent acquisition source of truth.
 // Designed to interoperate with CoreHR (People Hub) employee + requisition shapes.
 
 export type ReqStatus = "DRAFT" | "PENDING_APPROVAL" | "OPEN" | "ON_HOLD" | "FILLED" | "CLOSED";
@@ -413,10 +413,10 @@ export interface ConversionEvent {
   lastErrorMessage?: string;
 }
 
-// Mirrors the CoreHR API contract (HireFlow → CoreHR candidate.hired event)
+// Mirrors the CoreHR API contract (CORTA Acquisition → CoreHR candidate.hired event)
 export interface CoreHRConversionPayload {
   event: "candidate.hired";
-  source: "HireFlow";
+  source: "CORTA Acquisition";
   occurredAt: string;
   candidate: {
     candidateId: string;
@@ -455,7 +455,7 @@ export function buildConversionPayload(candidateId: string): CoreHRConversionPay
   const o = offers.find(x => x.candidateId === candidateId); if (!o) return null;
   return {
     event: "candidate.hired",
-    source: "HireFlow",
+    source: "CORTA Acquisition",
     occurredAt: new Date().toISOString(),
     candidate: { candidateId: c.id, firstName: c.firstName, lastName: c.lastName, email: c.email, phone: c.phone, country: c.country, location: c.location },
     position: { requisitionId: r.id, jobTitle: r.title, department: r.department, costCenter: r.costCenter, legalEntity: r.legalEntity, grade: r.level, employmentType: r.employmentType, managerId: r.hiringManagerId },
@@ -590,7 +590,7 @@ export function validateConversionPayload(p: unknown): { ok: boolean; errors: st
   if (!p || typeof p !== "object") return { ok: false, errors: ["payload missing"] };
   const x = p as any;
   if (x.event !== "candidate.hired") errors.push("event must be 'candidate.hired'");
-  if (x.source !== "HireFlow") errors.push("source must be 'HireFlow'");
+  if (x.source !== "CORTA Acquisition") errors.push("source must be 'CORTA Acquisition'");
   if (!isStr(x.occurredAt)) errors.push("occurredAt required");
   for (const k of ["candidateId","firstName","lastName","email","phone","country","location"])
     if (!isStr(x.candidate?.[k])) errors.push(`candidate.${k} required`);

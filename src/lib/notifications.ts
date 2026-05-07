@@ -26,7 +26,7 @@ export interface Notification {
 
 const listeners = new Set<() => void>();
 let version = 0;
-const STORAGE_KEY = "hireflow.notifications.v1";
+const STORAGE_KEY = "corta.notifications.v1";
 
 function loadPersisted(): Notification[] {
   if (typeof window === "undefined") return [];
@@ -113,7 +113,7 @@ export function broadcastMilestone(opts: {
   };
   if (isChannelEnabled("email")) dispatchNotification({ ...base, channel: "email", to: opts.recipientEmail ?? "nora.haddad@coreflow.com" });
   if (isChannelEnabled("in_app")) dispatchNotification({ ...base, channel: "in_app", to: opts.recipientUserId ?? "EMP-1007" });
-  if (isChannelEnabled("slack")) dispatchNotification({ ...base, channel: "slack", to: opts.slackChannel ?? "#hireflow-alerts" });
+  if (isChannelEnabled("slack")) dispatchNotification({ ...base, channel: "slack", to: opts.slackChannel ?? "#corta-alerts" });
 }
 
 export function notificationsByEntity(entity: Notification["entity"], entityId: string) {

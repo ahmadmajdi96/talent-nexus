@@ -9,7 +9,7 @@ import { candidates, STAGE_LABEL, requisitions } from "@/lib/ta-data";
 
 export const Route = createFileRoute("/candidates/")({
   head: () => ({ meta: [
-    { title: "Candidates — HireFlow" },
+    { title: "Candidates — CORTA Acquisition" },
     { name: "description", content: "All candidates across requisitions, with source, stage and rating." },
   ]}),
   component: CandidatesPage,

@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/conversion")({
   head: () => ({ meta: [
-    { title: "CoreHR Handoff — HireFlow" },
+    { title: "CoreHR Handoff — CORTA Acquisition" },
     { name: "description", content: "candidate.hired event flow into CoreHR with payload validation, retries and webhook delivery log." },
   ]}),
   component: ConversionPage,
@@ -34,7 +34,7 @@ function ConversionPage() {
     <AppShell>
       <PageHeader
         title={<span className="flex items-center gap-3">CoreHR Handoff <Pill tone="success"><GitMerge className="h-3 w-3" /> API connected</Pill></span>}
-        description="HireFlow emits candidate.hired to CoreHR. Payloads are JSON-schema validated, signed (HMAC-SHA256), and retried with exponential backoff up to 5 attempts."
+        description="CORTA Acquisition emits candidate.hired to CoreHR. Payloads are JSON-schema validated, signed (HMAC-SHA256), and retried with exponential backoff up to 5 attempts."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -45,7 +45,7 @@ function ConversionPage() {
             <Step n={2} title="Validate payload" desc="JSON-schema validation: required candidate, position, offer, recruiter fields. ISO-4217 currency, ISO date startDate." />
             <Step n={3} title="Sign + emit" desc="HMAC-SHA256 of body keyed with COREHR_WEBHOOK_SECRET. POST /api/v1/coreHR/employees." />
             <Step n={4} title="Retry on failure" desc="Exponential backoff (10s, 30s, 2m, 10m, 1h) up to 5 attempts. Failed deliveries surface to the recruiter." />
-            <Step n={5} title="Webhook reply" desc="CoreHR returns employee_id once provisioned; HireFlow records EMPLOYEE_CREATED and notifies onboarding." />
+            <Step n={5} title="Webhook reply" desc="CoreHR returns employee_id once provisioned; CORTA Acquisition records EMPLOYEE_CREATED and notifies onboarding." />
           </ol>
         </div>
 
@@ -125,7 +125,7 @@ function ConversionPage() {
 
       <div className="page-section p-5 border-l-4" style={{ borderLeftColor: "hsl(174 72% 42%)" }}>
         <div className="font-semibold flex items-center gap-2 mb-2"><Sparkles className="h-4 w-4 text-accent" /> WorkGrid integration (inbound)</div>
-        <p className="text-sm text-muted-foreground">WorkGrid pushes <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">project.staffing.forecast</code> events into HireFlow so the TA Lead can prioritize requisitions against upcoming project demand. <Link to="/forecasts" className="text-primary hover:underline">Open forecasts →</Link></p>
+        <p className="text-sm text-muted-foreground">WorkGrid pushes <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">project.staffing.forecast</code> events into CORTA Acquisition so the TA Lead can prioritize requisitions against upcoming project demand. <Link to="/forecasts" className="text-primary hover:underline">Open forecasts →</Link></p>
       </div>
     </AppShell>
   );
