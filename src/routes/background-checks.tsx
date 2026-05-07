@@ -9,7 +9,8 @@ import {
   ADVERSE_ACTION_REASONS, type BgCheckStatus,
 } from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
-import { ShieldCheck, Mail, FileText, Bell, AlertTriangle, Gavel } from "lucide-react";
+import { CAN, useCurrentUser } from "@/lib/role";
+import { ShieldCheck, Mail, FileText, Bell, AlertTriangle, Gavel, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/background-checks")({
