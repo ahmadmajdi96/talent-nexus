@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as PeopleHubFeedRouteImport } from './routes/people-hub-feed'
 import { Route as OffersRouteImport } from './routes/offers'
+import { Route as NotificationsSettingsRouteImport } from './routes/notifications-settings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as ForecastsRouteImport } from './routes/forecasts'
@@ -57,6 +58,11 @@ const PeopleHubFeedRoute = PeopleHubFeedRouteImport.update({
 const OffersRoute = OffersRouteImport.update({
   id: '/offers',
   path: '/offers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsSettingsRoute = NotificationsSettingsRouteImport.update({
+  id: '/notifications-settings',
+  path: '/notifications-settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/notifications': typeof NotificationsRoute
+  '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/notifications': typeof NotificationsRoute
+  '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/notifications': typeof NotificationsRoute
+  '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
@@ -249,6 +258,7 @@ export interface FileRouteTypes {
     | '/forecasts'
     | '/interviews'
     | '/notifications'
+    | '/notifications-settings'
     | '/offers'
     | '/people-hub-feed'
     | '/referrals'
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/forecasts'
     | '/interviews'
     | '/notifications'
+    | '/notifications-settings'
     | '/offers'
     | '/people-hub-feed'
     | '/referrals'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/forecasts'
     | '/interviews'
     | '/notifications'
+    | '/notifications-settings'
     | '/offers'
     | '/people-hub-feed'
     | '/referrals'
@@ -328,6 +340,7 @@ export interface RootRouteChildren {
   ForecastsRoute: typeof ForecastsRoute
   InterviewsRoute: typeof InterviewsRoute
   NotificationsRoute: typeof NotificationsRoute
+  NotificationsSettingsRoute: typeof NotificationsSettingsRoute
   OffersRoute: typeof OffersRoute
   PeopleHubFeedRoute: typeof PeopleHubFeedRoute
   ReferralsRoute: typeof ReferralsRoute
@@ -377,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/offers'
       fullPath: '/offers'
       preLoaderRoute: typeof OffersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications-settings': {
+      id: '/notifications-settings'
+      path: '/notifications-settings'
+      fullPath: '/notifications-settings'
+      preLoaderRoute: typeof NotificationsSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -539,6 +559,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForecastsRoute: ForecastsRoute,
   InterviewsRoute: InterviewsRoute,
   NotificationsRoute: NotificationsRoute,
+  NotificationsSettingsRoute: NotificationsSettingsRoute,
   OffersRoute: OffersRoute,
   PeopleHubFeedRoute: PeopleHubFeedRoute,
   ReferralsRoute: ReferralsRoute,
@@ -555,3 +576,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
