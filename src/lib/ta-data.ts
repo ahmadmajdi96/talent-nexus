@@ -85,6 +85,18 @@ export interface Scorecard {
   notes: string;
   recommendation: "STRONG_HIRE" | "HIRE" | "NO_HIRE" | "STRONG_NO_HIRE";
   submittedAt?: string;
+  finalized?: boolean;
+  finalizedAt?: string;
+  signature?: string; // interviewer e-signature (typed name)
+}
+
+export interface HiringDecision {
+  candidateId: string;
+  decidedBy: string;
+  decidedById: string;
+  decision: "ADVANCE" | "HIRE" | "REJECT" | "HOLD";
+  rationale: string;
+  decidedAt: string;
 }
 
 export interface Interview {
