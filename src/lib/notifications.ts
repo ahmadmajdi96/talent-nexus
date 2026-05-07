@@ -110,9 +110,11 @@ export function broadcastMilestone(opts: {
     entity: opts.entity, entityId: opts.entityId,
     candidateId: opts.candidateId, reqId: opts.reqId,
   };
-  dispatchNotification({ ...base, channel: "email", to: opts.recipientEmail ?? "nora.haddad@coreflow.com" });
-  dispatchNotification({ ...base, channel: "in_app", to: opts.recipientUserId ?? "EMP-1007" });
-  dispatchNotification({ ...base, channel: "slack", to: opts.slackChannel ?? "#hireflow-alerts" });
+  // Lazy import to avoid cycles
+  const { isChannelEnabled } = require("./notif-prefs") as typeof import("./notif-prefs");
+  if (isChannelEnabled("email")) dispatchNotification({ ...base, channel: "email", to: opts.recipientEmail ?? "nora.haddad@coreflow.com" });
+  if (isChannelEnabled("in_app")) dispatchNotification({ ...base, channel: "in_app", to: opts.recipientUserId ?? "EMP-1007" });
+  if (isChannelEnabled("slack")) dispatchNotification({ ...base, channel: "slack", to: opts.slackChannel ?? "#hireflow-alerts" });
 }
 
 export function notificationsByEntity(entity: Notification["entity"], entityId: string) {
