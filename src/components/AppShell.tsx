@@ -36,6 +36,7 @@ const sections: { label: string; items: Item[] }[] = [
   { label: "Administration", items: [
     { to: "/audit", label: "Audit Log", icon: FileText },
     { to: "/notifications", label: "Notifications", icon: Bell },
+    { to: "/notifications-settings", label: "Notification Settings", icon: Settings2 },
     { to: "/settings", label: "Settings", icon: Settings2 },
   ]},
 ];

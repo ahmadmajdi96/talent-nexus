@@ -69,11 +69,18 @@ function PeopleHubFeed() {
         </table>
       </div>
 
-      <div className="page-section p-4 mt-5 text-xs text-muted-foreground">
-        <div className="flex items-center gap-2 mb-2 text-foreground font-semibold"><Users2 className="h-4 w-4" /> Integration contract</div>
-        Each outcome is published to People Hub via the <span className="font-mono">talent.outcome.v1</span> event bus with stable
-        <span className="font-mono"> candidateUrl</span> / <span className="font-mono">requisitionUrl</span> deep links and (when applicable) a CoreHR
-        <span className="font-mono"> employeeId</span> for joining to the People Hub employee record.
+      <div className="page-section p-4 mt-5 text-xs text-muted-foreground space-y-2">
+        <div className="flex items-center gap-2 text-foreground font-semibold"><Users2 className="h-4 w-4" /> Integration contract</div>
+        <div>
+          Each outcome is published to People Hub via the <span className="font-mono">talent.outcome.v1</span> event bus with stable
+          <span className="font-mono"> candidateUrl</span> / <span className="font-mono">requisitionUrl</span> deep links and (when applicable) a CoreHR
+          <span className="font-mono"> employeeId</span> for joining to the People Hub employee record.
+        </div>
+        <div className="flex items-center gap-2 pt-2 border-t border-border">
+          <span className="text-foreground font-semibold">Live endpoint:</span>
+          <a href="/api/public/talent.outcome.v1" target="_blank" rel="noreferrer" className="font-mono text-primary hover:underline">GET /api/public/talent.outcome.v1</a>
+          <span>· filter <span className="font-mono">?kind=CONVERSION&amp;limit=50</span></span>
+        </div>
       </div>
     </AppShell>
   );

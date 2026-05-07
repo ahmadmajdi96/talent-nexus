@@ -4,7 +4,9 @@ import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
 import { notifications, retryNotification, useNotifications } from "@/lib/notifications";
-import { scanUpcomingReminders, startReminderScheduler, fireReminderNow, REMINDER_LEAD_MS } from "@/lib/reminders";
+import { scanUpcomingReminders, startReminderScheduler, fireReminderNow } from "@/lib/reminders";
+import { useCurrentUser } from "@/lib/role";
+import { reminderLeadMsForRole, useNotifPrefs } from "@/lib/notif-prefs";
 import { useTAStore } from "@/hooks/use-ta-store";
 import { Bell, Mail, MessageSquare, Smartphone, RefreshCw, Clock, AlarmClock } from "lucide-react";
 import { toast } from "sonner";
@@ -22,8 +24,11 @@ const channelIcon = { email: Mail, in_app: Smartphone, slack: MessageSquare } as
 function NotificationsPage() {
   useTAStore();
   useNotifications();
+  useNotifPrefs();
+  const me = useCurrentUser();
   useEffect(() => { startReminderScheduler(); }, []);
-  const upcoming = scanUpcomingReminders();
+  const leadMs = reminderLeadMsForRole(me.role);
+  const upcoming = scanUpcomingReminders(me.role);
 
   return (
     <AppShell>
@@ -36,7 +41,7 @@ function NotificationsPage() {
         <div className="flex items-center gap-2 mb-3">
           <AlarmClock className="h-4 w-4 text-warning" />
           <div className="font-semibold">Scheduled dispute-window reminders</div>
-          <span className="text-xs text-muted-foreground ml-auto">Auto-fires {Math.round(REMINDER_LEAD_MS / 3_600_000)}h before window closes</span>
+          <span className="text-xs text-muted-foreground ml-auto">Auto-fires {Math.round(leadMs / 3_600_000)}h before window closes ({me.role.replace("_"," ")})</span>
         </div>
         {upcoming.length === 0 && <div className="text-xs text-muted-foreground">No open adverse-action dispute windows.</div>}
         <div className="space-y-2">

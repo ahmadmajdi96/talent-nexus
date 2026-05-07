@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as PeopleHubFeedRouteImport } from './routes/people-hub-feed'
 import { Route as OffersRouteImport } from './routes/offers'
+import { Route as NotificationsSettingsRouteImport } from './routes/notifications-settings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as ForecastsRouteImport } from './routes/forecasts'
@@ -32,6 +33,7 @@ import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
 import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 import { Route as CandidatesIdScorecardRouteImport } from './routes/candidates.$id.scorecard'
+import { Route as ApiPublicTalentDotoutcomeDotv1RouteImport } from './routes/api.public.talent[.]outcome[.]v1'
 
 const VendorSimRoute = VendorSimRouteImport.update({
   id: '/vendor-sim',
@@ -56,6 +58,11 @@ const PeopleHubFeedRoute = PeopleHubFeedRouteImport.update({
 const OffersRoute = OffersRouteImport.update({
   id: '/offers',
   path: '/offers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsSettingsRoute = NotificationsSettingsRouteImport.update({
+  id: '/notifications-settings',
+  path: '/notifications-settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -148,6 +155,12 @@ const CandidatesIdScorecardRoute = CandidatesIdScorecardRouteImport.update({
   path: '/scorecard',
   getParentRoute: () => CandidatesIdRoute,
 } as any)
+const ApiPublicTalentDotoutcomeDotv1Route =
+  ApiPublicTalentDotoutcomeDotv1RouteImport.update({
+    id: '/api/public/talent.outcome.v1',
+    path: '/api/public/talent.outcome.v1',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/notifications': typeof NotificationsRoute
+  '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
@@ -172,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/candidates/': typeof CandidatesIndexRoute
   '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
+  '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
 }
 export interface FileRoutesByTo {
@@ -186,6 +201,7 @@ export interface FileRoutesByTo {
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/notifications': typeof NotificationsRoute
+  '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
@@ -197,6 +213,7 @@ export interface FileRoutesByTo {
   '/candidates': typeof CandidatesIndexRoute
   '/pipeline': typeof PipelineIndexRoute
   '/requisitions': typeof RequisitionsIndexRoute
+  '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
 }
 export interface FileRoutesById {
@@ -212,6 +229,7 @@ export interface FileRoutesById {
   '/forecasts': typeof ForecastsRoute
   '/interviews': typeof InterviewsRoute
   '/notifications': typeof NotificationsRoute
+  '/notifications-settings': typeof NotificationsSettingsRoute
   '/offers': typeof OffersRoute
   '/people-hub-feed': typeof PeopleHubFeedRoute
   '/referrals': typeof ReferralsRoute
@@ -223,6 +241,7 @@ export interface FileRoutesById {
   '/candidates/': typeof CandidatesIndexRoute
   '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
+  '/api/public/talent.outcome.v1': typeof ApiPublicTalentDotoutcomeDotv1Route
   '/candidates/$id/scorecard': typeof CandidatesIdScorecardRoute
 }
 export interface FileRouteTypes {
@@ -239,6 +258,7 @@ export interface FileRouteTypes {
     | '/forecasts'
     | '/interviews'
     | '/notifications'
+    | '/notifications-settings'
     | '/offers'
     | '/people-hub-feed'
     | '/referrals'
@@ -250,6 +270,7 @@ export interface FileRouteTypes {
     | '/candidates/'
     | '/pipeline/'
     | '/requisitions/'
+    | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -264,6 +285,7 @@ export interface FileRouteTypes {
     | '/forecasts'
     | '/interviews'
     | '/notifications'
+    | '/notifications-settings'
     | '/offers'
     | '/people-hub-feed'
     | '/referrals'
@@ -275,6 +297,7 @@ export interface FileRouteTypes {
     | '/candidates'
     | '/pipeline'
     | '/requisitions'
+    | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
   id:
     | '__root__'
@@ -289,6 +312,7 @@ export interface FileRouteTypes {
     | '/forecasts'
     | '/interviews'
     | '/notifications'
+    | '/notifications-settings'
     | '/offers'
     | '/people-hub-feed'
     | '/referrals'
@@ -300,6 +324,7 @@ export interface FileRouteTypes {
     | '/candidates/'
     | '/pipeline/'
     | '/requisitions/'
+    | '/api/public/talent.outcome.v1'
     | '/candidates/$id/scorecard'
   fileRoutesById: FileRoutesById
 }
@@ -315,6 +340,7 @@ export interface RootRouteChildren {
   ForecastsRoute: typeof ForecastsRoute
   InterviewsRoute: typeof InterviewsRoute
   NotificationsRoute: typeof NotificationsRoute
+  NotificationsSettingsRoute: typeof NotificationsSettingsRoute
   OffersRoute: typeof OffersRoute
   PeopleHubFeedRoute: typeof PeopleHubFeedRoute
   ReferralsRoute: typeof ReferralsRoute
@@ -326,6 +352,7 @@ export interface RootRouteChildren {
   CandidatesIndexRoute: typeof CandidatesIndexRoute
   PipelineIndexRoute: typeof PipelineIndexRoute
   RequisitionsIndexRoute: typeof RequisitionsIndexRoute
+  ApiPublicTalentDotoutcomeDotv1Route: typeof ApiPublicTalentDotoutcomeDotv1Route
 }
 
 declare module '@tanstack/react-router' {
@@ -363,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/offers'
       fullPath: '/offers'
       preLoaderRoute: typeof OffersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications-settings': {
+      id: '/notifications-settings'
+      path: '/notifications-settings'
+      fullPath: '/notifications-settings'
+      preLoaderRoute: typeof NotificationsSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -491,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CandidatesIdScorecardRouteImport
       parentRoute: typeof CandidatesIdRoute
     }
+    '/api/public/talent.outcome.v1': {
+      id: '/api/public/talent.outcome.v1'
+      path: '/api/public/talent.outcome.v1'
+      fullPath: '/api/public/talent.outcome.v1'
+      preLoaderRoute: typeof ApiPublicTalentDotoutcomeDotv1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -518,6 +559,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForecastsRoute: ForecastsRoute,
   InterviewsRoute: InterviewsRoute,
   NotificationsRoute: NotificationsRoute,
+  NotificationsSettingsRoute: NotificationsSettingsRoute,
   OffersRoute: OffersRoute,
   PeopleHubFeedRoute: PeopleHubFeedRoute,
   ReferralsRoute: ReferralsRoute,
@@ -529,6 +571,7 @@ const rootRouteChildren: RootRouteChildren = {
   CandidatesIndexRoute: CandidatesIndexRoute,
   PipelineIndexRoute: PipelineIndexRoute,
   RequisitionsIndexRoute: RequisitionsIndexRoute,
+  ApiPublicTalentDotoutcomeDotv1Route: ApiPublicTalentDotoutcomeDotv1Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
