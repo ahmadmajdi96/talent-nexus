@@ -1,0 +1,10 @@
+services:
+  corta-acquisition:
+    build: .
+    container_name: corta-acquisition
+    ports:
+      - "6006:6006"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=6006
+    restart: unless-stopped
