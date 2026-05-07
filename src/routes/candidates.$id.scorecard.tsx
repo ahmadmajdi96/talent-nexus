@@ -4,9 +4,9 @@ import { z } from "zod";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
-import { candidateById, reqById, submitScorecard, aggregateScorecards, type Scorecard } from "@/lib/ta-data";
+import { candidateById, reqById, submitScorecard, finalizeScorecard, aggregateScorecards, type Scorecard } from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/candidates/$id/scorecard")({
@@ -64,6 +64,7 @@ function ScorecardForm() {
   const [interviewerName, setInterviewerName] = useState("Marcus Lindberg");
   const [notes, setNotes] = useState("");
   const [rec, setRec] = useState<Scorecard["recommendation"]>("HIRE");
+  const [signature, setSignature] = useState("");
 
   if (!c) return <AppShell><div className="text-center py-20 text-muted-foreground">Candidate not found.</div></AppShell>;
 
@@ -71,9 +72,10 @@ function ScorecardForm() {
     setFocus(f); setScores(COMPETENCIES_BY_FOCUS[f].map(() => 3));
   };
 
-  const submit = () => {
+  const submit = (alsoFinalize: boolean) => {
     const parsed = schema.safeParse({ interviewerName, focus, scores, notes, recommendation: rec });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+    if (alsoFinalize && signature.trim().length < 3) { toast.error("Type your full name to sign off"); return; }
     submitScorecard(c.id, {
       interviewerId: "EMP-1004",
       interviewerName,
@@ -82,7 +84,13 @@ function ScorecardForm() {
       notes,
       recommendation: rec,
     });
-    toast.success("Scorecard submitted", { description: "Hiring manager has been notified." });
+    if (alsoFinalize) {
+      const last = candidateById(c.id)?.scorecards.at(-1);
+      if (last) finalizeScorecard(c.id, last.id, signature);
+      toast.success("Scorecard finalized & locked", { description: "Hiring manager has been notified." });
+    } else {
+      toast.success("Scorecard saved as draft");
+    }
     navigate({ to: "/candidates/$id", params: { id: c.id } });
   };
 
@@ -164,9 +172,16 @@ function ScorecardForm() {
             </div>
           </div>
 
+          <div className="page-section p-5">
+            <div className="font-semibold mb-2 flex items-center gap-2"><Lock className="h-4 w-4 text-primary" /> Sign off & finalize</div>
+            <div className="text-xs text-muted-foreground mb-2">Type your full legal name to e-sign. Finalized scorecards become read-only and cannot be edited — they are entered into the immutable audit log.</div>
+            <input value={signature} onChange={e => setSignature(e.target.value)} placeholder="Type your full name to sign" className="h-9 w-full px-3 rounded-md border border-border bg-card text-sm" />
+          </div>
+
           <div className="flex justify-end gap-2">
             <Link to="/candidates/$id" params={{ id: c.id }} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-medium">Cancel</Link>
-            <button onClick={submit} className="inline-flex items-center px-5 h-10 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-semibold">Submit scorecard</button>
+            <button onClick={() => submit(false)} className="inline-flex items-center px-4 h-10 rounded-md border border-border bg-card hover:bg-muted text-sm font-semibold">Save draft</button>
+            <button onClick={() => submit(true)} className="inline-flex items-center gap-1.5 px-5 h-10 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-semibold"><Lock className="h-4 w-4" /> Finalize & sign</button>
           </div>
         </div>
 

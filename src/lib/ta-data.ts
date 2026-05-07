@@ -85,6 +85,18 @@ export interface Scorecard {
   notes: string;
   recommendation: "STRONG_HIRE" | "HIRE" | "NO_HIRE" | "STRONG_NO_HIRE";
   submittedAt?: string;
+  finalized?: boolean;
+  finalizedAt?: string;
+  signature?: string; // interviewer e-signature (typed name)
+}
+
+export interface HiringDecision {
+  candidateId: string;
+  decidedBy: string;
+  decidedById: string;
+  decision: "ADVANCE" | "HIRE" | "REJECT" | "HOLD";
+  rationale: string;
+  decidedAt: string;
 }
 
 export interface Interview {
@@ -384,16 +396,21 @@ export const auditLog = [
 ];
 
 // CoreHR conversion events (the bridge to People Hub)
+export type ConversionErrorCategory = "TRANSIENT" | "AUTH" | "VALIDATION" | "DUPLICATE" | "REMOTE_5XX" | "UNKNOWN";
+
 export interface ConversionEvent {
   id: string;
+  idempotencyKey: string; // deterministic per candidate.hired (candidateId + offerId)
   candidateId: string;
   candidateName: string;
   reqId: string;
   offerId: string;
   acceptedAt: string;
-  status: "QUEUED" | "DELIVERED" | "EMPLOYEE_CREATED" | "FAILED";
+  status: "QUEUED" | "DELIVERED" | "EMPLOYEE_CREATED" | "FAILED" | "DUPLICATE";
   newEmployeeId?: string;
   payload: CoreHRConversionPayload;
+  lastErrorCategory?: ConversionErrorCategory;
+  lastErrorMessage?: string;
 }
 
 // Mirrors the CoreHR API contract (HireFlow → CoreHR candidate.hired event)
@@ -448,9 +465,15 @@ export function buildConversionPayload(candidateId: string): CoreHRConversionPay
   };
 }
 
+export function makeIdempotencyKey(candidateId: string, offerId: string) {
+  return `chired:${candidateId}:${offerId}`;
+}
+
 export const conversionEvents: ConversionEvent[] = [
   {
-    id: "EVT-2026-0009", candidateId: "C-0042", candidateName: "Reina Patel", reqId: "REQ-2026-0088", offerId: "OFR-2026-0016",
+    id: "EVT-2026-0009",
+    idempotencyKey: makeIdempotencyKey("C-0042", "OFR-2026-0016"),
+    candidateId: "C-0042", candidateName: "Reina Patel", reqId: "REQ-2026-0088", offerId: "OFR-2026-0016",
     acceptedAt: "2026-04-26 14:02", status: "EMPLOYEE_CREATED", newEmployeeId: "EMP-1085",
     payload: buildConversionPayload("C-0042")!,
   },
@@ -462,6 +485,20 @@ export const conversionEvents: ConversionEvent[] = [
 export type BgCheckStatus =
   | "NOT_STARTED" | "CONSENT_PENDING" | "REQUESTED" | "IN_PROGRESS"
   | "ADVERSE_ACTION" | "CLEAR" | "CANCELLED";
+
+export interface AdverseAction {
+  reasons: string[]; // FCRA reasons (e.g., "Criminal record", "Misrepresented employment")
+  preNoticeAt?: string; // pre-adverse action notice sent
+  disputeWindowEndsAt?: string; // typically pre-notice + 5 business days
+  disputed?: boolean;
+  disputedAt?: string;
+  disputeNotes?: string;
+  finalNoticeAt?: string;
+  decision?: "WITHDRAWN" | "RESCINDED_OFFER" | "PROCEED";
+  decisionBy?: string;
+  decisionAt?: string;
+  decisionRationale?: string;
+}
 
 export interface BackgroundCheck {
   id: string;
@@ -480,6 +517,7 @@ export interface BackgroundCheck {
   recruiterNotified: boolean;
   notifications: { at: string; channel: "email" | "in_app" | "slack"; to: string; subject: string }[];
   events: { at: string; actor: string; text: string }[];
+  adverseAction?: AdverseAction;
 }
 
 export const backgroundChecks: BackgroundCheck[] = [
@@ -655,23 +693,41 @@ export function advanceBackgroundCheck(id: string, to: BgCheckStatus, note?: str
   bump();
 }
 
-export function retryConversion(eventId: string) {
+// Categorize HTTP/transport errors so the retry policy can decide whether to back off.
+export function categorizeConversionError(httpStatus: number, snippet?: string): ConversionErrorCategory {
+  if (httpStatus === 0) return "TRANSIENT";
+  if (httpStatus === 401 || httpStatus === 403) return "AUTH";
+  if (httpStatus === 409 || /duplicate|idempot/i.test(snippet ?? "")) return "DUPLICATE";
+  if (httpStatus === 422 || httpStatus === 400) return "VALIDATION";
+  if (httpStatus >= 500 && httpStatus < 600) return "REMOTE_5XX";
+  if (httpStatus >= 200 && httpStatus < 300) return "TRANSIENT";
+  return "UNKNOWN";
+}
+
+const RETRYABLE: ConversionErrorCategory[] = ["TRANSIENT", "REMOTE_5XX"];
+export const isRetryable = (cat?: ConversionErrorCategory) => !!cat && RETRYABLE.includes(cat);
+
+export function retryConversion(eventId: string, opts?: { simulate?: { httpStatus: number; snippet?: string } }) {
   const e = conversionEvents.find(x => x.id === eventId); if (!e) return;
   const list = (conversionDeliveries[eventId] = conversionDeliveries[eventId] ?? []);
   const attempt = list.length + 1;
-  const ok = Math.random() > 0.3;
+  let httpStatus: number; let snippet: string;
+  if (opts?.simulate) { httpStatus = opts.simulate.httpStatus; snippet = opts.simulate.snippet ?? ""; }
+  else { const ok = Math.random() > 0.3; httpStatus = ok ? 200 : 502; snippet = ok ? `{"employeeId":"EMP-${1090 + attempt}","status":"created"}` : "Bad Gateway"; }
   list.push({
-    attempt, at: nowIso(),
-    httpStatus: ok ? 200 : 502,
-    responseSnippet: ok ? `{"employeeId":"EMP-${1090 + attempt}","status":"created"}` : "Bad Gateway",
+    attempt, at: nowIso(), httpStatus,
+    responseSnippet: snippet || (httpStatus < 300 ? "OK" : "error"),
     signatureValid: true,
     durationMs: 200 + Math.floor(Math.random() * 600),
   });
-  if (ok) {
+  if (httpStatus >= 200 && httpStatus < 300) {
     e.status = "EMPLOYEE_CREATED";
-    e.newEmployeeId = e.newEmployeeId ?? `EMP-${1090 + attempt}`;
+    const m = /EMP-\d+/.exec(snippet); e.newEmployeeId = e.newEmployeeId ?? (m?.[0] ?? `EMP-${1090 + attempt}`);
+    e.lastErrorCategory = undefined; e.lastErrorMessage = undefined;
   } else {
-    e.status = "FAILED";
+    const cat = categorizeConversionError(httpStatus, snippet);
+    e.lastErrorCategory = cat; e.lastErrorMessage = snippet;
+    e.status = cat === "DUPLICATE" ? "DUPLICATE" : "FAILED";
   }
   bump();
 }
@@ -683,15 +739,159 @@ export function emitConversion(candidateId: string) {
   if (!v.ok) return { error: "validation_failed", details: v.errors };
   const c = candidates.find(x => x.id === candidateId)!;
   const o = offers.find(x => x.candidateId === candidateId)!;
+  const idemKey = makeIdempotencyKey(c.id, o.id);
+  const existing = conversionEvents.find(e => e.idempotencyKey === idemKey);
+  if (existing) {
+    const list = (conversionDeliveries[existing.id] = conversionDeliveries[existing.id] ?? []);
+    list.push({ attempt: list.length + 1, at: nowIso(), httpStatus: 409, responseSnippet: `Duplicate idempotency key ${idemKey}`, signatureValid: true, durationMs: 41 });
+    if (existing.status !== "EMPLOYEE_CREATED") existing.status = "DUPLICATE";
+    existing.lastErrorCategory = "DUPLICATE";
+    existing.lastErrorMessage = `Duplicate – reused event ${existing.id}`;
+    bump();
+    return existing;
+  }
   const id = `EVT-2026-${String(10 + conversionEvents.length).padStart(4, "0")}`;
   const ev: ConversionEvent = {
-    id, candidateId: c.id, candidateName: `${c.firstName} ${c.lastName}`,
+    id, idempotencyKey: idemKey,
+    candidateId: c.id, candidateName: `${c.firstName} ${c.lastName}`,
     reqId: c.reqId, offerId: o.id, acceptedAt: nowIso(),
     status: "QUEUED", payload,
   };
   conversionEvents.unshift(ev);
-  retryConversion(id); // first attempt
+  retryConversion(id);
   return ev;
+}
+
+// =============== Adverse action workflow ===============
+export const ADVERSE_ACTION_REASONS = [
+  "Criminal record discrepancy",
+  "Misrepresented employment history",
+  "Education verification failed",
+  "Negative references",
+  "Identity verification failed",
+  "Credit report concerns",
+  "Failed drug screen",
+] as const;
+
+function addBusinessDays(from: Date, days: number) {
+  const d = new Date(from); let added = 0;
+  while (added < days) { d.setDate(d.getDate() + 1); const wd = d.getDay(); if (wd !== 0 && wd !== 6) added++; }
+  return d;
+}
+
+export function startAdverseAction(bgcId: string, reasons: string[], actor = "Nora Haddad") {
+  const b = backgroundChecks.find(x => x.id === bgcId); if (!b) return;
+  const dispute = addBusinessDays(new Date(), 5);
+  b.status = "ADVERSE_ACTION";
+  b.completedAt = b.completedAt ?? nowIso();
+  b.adverseAction = {
+    reasons, preNoticeAt: nowIso(),
+    disputeWindowEndsAt: dispute.toISOString().replace("T", " ").slice(0, 19),
+  };
+  b.events = [{ at: nowIso(), actor, text: `Pre-adverse action notice issued. Reasons: ${reasons.join(", ")}. Dispute window 5 business days.` }, ...b.events];
+  b.notifications = [
+    { at: nowIso(), channel: "email", to: "candidate", subject: `Pre-adverse action notice — review attached report` },
+    { at: nowIso(), channel: "in_app", to: "EMP-1007", subject: `BGC ${b.id} entered ADVERSE_ACTION` },
+    ...b.notifications,
+  ];
+  auditLog.unshift({ id: `AL-${7400 + auditLog.length}`, entity: "BackgroundCheck", entityId: b.id, action: "ADVERSE_PRE_NOTICE", actor, at: nowIso(), text: `Pre-adverse notice: ${reasons.join("; ")}` });
+  bump();
+}
+
+export function disputeAdverseAction(bgcId: string, notes: string) {
+  const b = backgroundChecks.find(x => x.id === bgcId); if (!b || !b.adverseAction) return;
+  b.adverseAction.disputed = true;
+  b.adverseAction.disputedAt = nowIso();
+  b.adverseAction.disputeNotes = notes;
+  b.events = [{ at: nowIso(), actor: `candidate:${b.candidateId}`, text: `Dispute submitted: ${notes}` }, ...b.events];
+  bump();
+}
+
+export function decideAdverseAction(bgcId: string, decision: NonNullable<AdverseAction["decision"]>, rationale: string, actor = "Nora Haddad") {
+  const b = backgroundChecks.find(x => x.id === bgcId); if (!b || !b.adverseAction) return;
+  b.adverseAction.decision = decision;
+  b.adverseAction.decisionAt = nowIso();
+  b.adverseAction.decisionBy = actor;
+  b.adverseAction.decisionRationale = rationale;
+  if (decision !== "PROCEED") b.adverseAction.finalNoticeAt = nowIso();
+  b.events = [{ at: nowIso(), actor, text: `Adverse action decision: ${decision}. Rationale: ${rationale}` }, ...b.events];
+  auditLog.unshift({ id: `AL-${7500 + auditLog.length}`, entity: "BackgroundCheck", entityId: b.id, action: `ADVERSE_${decision}`, actor, at: nowIso(), text: `Adverse decision ${decision} for ${b.candidateData.fullLegalName}: ${rationale}` });
+  bump();
+}
+
+// =============== Scorecard finalization & hiring decisions ===============
+export const hiringDecisions: HiringDecision[] = [];
+
+export function finalizeScorecard(candidateId: string, scorecardId: string, signature: string) {
+  const c = candidates.find(x => x.id === candidateId); if (!c) return;
+  const sc = c.scorecards.find(s => s.id === scorecardId); if (!sc || sc.finalized) return;
+  if (signature.trim().length < 3) return;
+  sc.finalized = true; sc.finalizedAt = nowIso(); sc.signature = signature.trim();
+  c.events = [{ at: nowIso(), type: "INTERVIEW", text: `Scorecard ${sc.id} finalized & signed by ${sc.signature}`, actor: sc.interviewerName }, ...c.events];
+  auditLog.unshift({ id: `AL-${7600 + auditLog.length}`, entity: "Scorecard", entityId: sc.id, action: "FINALIZED", actor: sc.interviewerName, at: nowIso(), text: `Scorecard locked with signature ${sc.signature}` });
+  bump();
+}
+
+export function recordHiringDecision(input: Omit<HiringDecision, "decidedAt">) {
+  const c = candidates.find(x => x.id === input.candidateId); if (!c) return;
+  const dec: HiringDecision = { ...input, decidedAt: nowIso() };
+  hiringDecisions.unshift(dec);
+  c.events = [{ at: nowIso(), type: "NOTE", text: `Hiring decision: ${dec.decision} — ${dec.rationale}`, actor: dec.decidedBy }, ...c.events];
+  if (dec.decision === "REJECT") c.stage = "REJECTED";
+  if (dec.decision === "HIRE") c.stage = "HIRED";
+  if (dec.decision === "ADVANCE") {
+    const order: Stage[] = ["NEW","SCREEN","PHONE_INT","ONSITE","OFFER","HIRED"];
+    const i = order.indexOf(c.stage); if (i >= 0 && i < order.length - 1) c.stage = order[i+1];
+  }
+  auditLog.unshift({ id: `AL-${7700 + auditLog.length}`, entity: "Candidate", entityId: c.id, action: `DECISION_${dec.decision}`, actor: dec.decidedBy, at: nowIso(), text: dec.rationale });
+  bump();
+  return dec;
+}
+export const decisionsByCandidate = (id: string) => hiringDecisions.filter(d => d.candidateId === id);
+
+// =============== Vendor webhook simulator ===============
+export type SimulatedVendorEvent =
+  | { kind: "STATUS_UPDATE"; status: BgCheckStatus; note?: string }
+  | { kind: "REPORT_CLEAR"; reportUrl?: string }
+  | { kind: "REPORT_FLAGS"; flags: string[]; reportUrl?: string }
+  | { kind: "VENDOR_ERROR"; httpStatus: number; message: string };
+
+export interface VendorWebhookLog {
+  at: string;
+  bgcId: string;
+  vendor: BackgroundCheck["vendor"];
+  event: SimulatedVendorEvent;
+  resultingStatus: BgCheckStatus;
+  notificationSent: boolean;
+}
+export const vendorWebhookLog: VendorWebhookLog[] = [];
+
+export function simulateVendorWebhook(bgcId: string, event: SimulatedVendorEvent) {
+  const b = backgroundChecks.find(x => x.id === bgcId); if (!b) return null;
+  let next: BgCheckStatus = b.status; let note = "";
+  switch (event.kind) {
+    case "STATUS_UPDATE": next = event.status; note = event.note ?? `Vendor → ${event.status}`; break;
+    case "REPORT_CLEAR":
+      next = "CLEAR"; note = "Vendor returned CLEAR report.";
+      b.vendorResponse = { reportUrl: event.reportUrl ?? `/reports/${bgcId}.pdf`, flags: [] };
+      break;
+    case "REPORT_FLAGS":
+      next = "ADVERSE_ACTION"; note = `Vendor flagged: ${event.flags.join(", ")}`;
+      b.vendorResponse = { reportUrl: event.reportUrl ?? `/reports/${bgcId}.pdf`, flags: event.flags };
+      break;
+    case "VENDOR_ERROR":
+      note = `Vendor error ${event.httpStatus}: ${event.message}`;
+      b.events = [{ at: nowIso(), actor: `vendor:${b.vendor.toLowerCase()}`, text: note }, ...b.events];
+      vendorWebhookLog.unshift({ at: nowIso(), bgcId, vendor: b.vendor, event, resultingStatus: b.status, notificationSent: false });
+      bump(); return b;
+  }
+  b.status = next;
+  if (next === "CLEAR" || next === "ADVERSE_ACTION") b.completedAt = nowIso();
+  b.events = [{ at: nowIso(), actor: `vendor:${b.vendor.toLowerCase()}`, text: note }, ...b.events];
+  b.notifications = [{ at: nowIso(), channel: "email", to: "nora.haddad@coreflow.com", subject: `BGC ${bgcId} → ${next}` }, ...b.notifications];
+  vendorWebhookLog.unshift({ at: nowIso(), bgcId, vendor: b.vendor, event, resultingStatus: next, notificationSent: true });
+  bump();
+  return b;
 }
 
 // helpers

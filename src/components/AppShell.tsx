@@ -19,6 +19,7 @@ const sections: { label: string; items: Item[] }[] = [
     { to: "/interviews", label: "Interviews", icon: CalendarCheck2 },
     { to: "/offers", label: "Offers", icon: FileSignature },
     { to: "/background-checks", label: "Background Checks", icon: ShieldCheck },
+    { to: "/vendor-sim", label: "Vendor Simulator", icon: Sparkles },
     { to: "/conversion", label: "CoreHR Handoff", icon: GitMerge },
   ]},
   { label: "Sourcing", items: [

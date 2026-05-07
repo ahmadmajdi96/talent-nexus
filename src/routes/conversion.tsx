@@ -88,7 +88,11 @@ function ConversionPage() {
               const lastFailed = e.status === "FAILED";
               return (
                 <tr key={e.id} className="border-t border-border align-top">
-                  <td className="p-3 font-mono text-xs">{e.id}</td>
+                  <td className="p-3 font-mono text-xs">
+                    <div>{e.id}</div>
+                    <div className="text-[10px] text-muted-foreground">idem: {e.idempotencyKey}</div>
+                    {e.lastErrorCategory && <Pill tone={e.lastErrorCategory === "DUPLICATE" ? "warning" : e.lastErrorCategory === "AUTH" || e.lastErrorCategory === "VALIDATION" ? "destructive" : "info"}>{e.lastErrorCategory}</Pill>}
+                  </td>
                   <td className="p-3"><Link to="/candidates/$id" params={{ id: e.candidateId }} className="font-medium hover:text-primary">{e.candidateName}</Link></td>
                   <td className="p-3 text-xs">{r?.title} <span className="text-muted-foreground font-mono">· {e.reqId}</span></td>
                   <td className="p-3 font-mono text-xs">{e.newEmployeeId ? <span className="inline-flex items-center gap-1">{e.newEmployeeId} <ArrowRight className="h-3 w-3 text-muted-foreground" /> CoreHR</span> : <span className="text-muted-foreground">—</span>}</td>
