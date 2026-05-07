@@ -9,6 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as OffersRouteImport } from './routes/offers'
+import { Route as InterviewsRouteImport } from './routes/interviews'
+import { Route as ConversionRouteImport } from './routes/conversion'
+import { Route as CareersRouteImport } from './routes/careers'
+import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AnnouncementsRouteImport } from './routes/announcements'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AgenciesRouteImport } from './routes/agencies'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RequisitionsIndexRouteImport } from './routes/requisitions.index'
 import { Route as PipelineIndexRouteImport } from './routes/pipeline.index'
@@ -17,6 +27,56 @@ import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
 import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferralsRoute = ReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffersRoute = OffersRouteImport.update({
+  id: '/offers',
+  path: '/offers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InterviewsRoute = InterviewsRouteImport.update({
+  id: '/interviews',
+  path: '/interviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConversionRoute = ConversionRouteImport.update({
+  id: '/conversion',
+  path: '/conversion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsRoute = AnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgenciesRoute = AgenciesRouteImport.update({
+  id: '/agencies',
+  path: '/agencies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +115,16 @@ const CandidatesIdRoute = CandidatesIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agencies': typeof AgenciesRoute
+  '/analytics': typeof AnalyticsRoute
+  '/announcements': typeof AnnouncementsRoute
+  '/audit': typeof AuditRoute
+  '/careers': typeof CareersRoute
+  '/conversion': typeof ConversionRoute
+  '/interviews': typeof InterviewsRoute
+  '/offers': typeof OffersRoute
+  '/referrals': typeof ReferralsRoute
+  '/settings': typeof SettingsRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
@@ -64,6 +134,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agencies': typeof AgenciesRoute
+  '/analytics': typeof AnalyticsRoute
+  '/announcements': typeof AnnouncementsRoute
+  '/audit': typeof AuditRoute
+  '/careers': typeof CareersRoute
+  '/conversion': typeof ConversionRoute
+  '/interviews': typeof InterviewsRoute
+  '/offers': typeof OffersRoute
+  '/referrals': typeof ReferralsRoute
+  '/settings': typeof SettingsRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
@@ -74,6 +154,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agencies': typeof AgenciesRoute
+  '/analytics': typeof AnalyticsRoute
+  '/announcements': typeof AnnouncementsRoute
+  '/audit': typeof AuditRoute
+  '/careers': typeof CareersRoute
+  '/conversion': typeof ConversionRoute
+  '/interviews': typeof InterviewsRoute
+  '/offers': typeof OffersRoute
+  '/referrals': typeof ReferralsRoute
+  '/settings': typeof SettingsRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
@@ -85,6 +175,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agencies'
+    | '/analytics'
+    | '/announcements'
+    | '/audit'
+    | '/careers'
+    | '/conversion'
+    | '/interviews'
+    | '/offers'
+    | '/referrals'
+    | '/settings'
     | '/candidates/$id'
     | '/pipeline/$reqId'
     | '/requisitions/$id'
@@ -94,6 +194,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agencies'
+    | '/analytics'
+    | '/announcements'
+    | '/audit'
+    | '/careers'
+    | '/conversion'
+    | '/interviews'
+    | '/offers'
+    | '/referrals'
+    | '/settings'
     | '/candidates/$id'
     | '/pipeline/$reqId'
     | '/requisitions/$id'
@@ -103,6 +213,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/agencies'
+    | '/analytics'
+    | '/announcements'
+    | '/audit'
+    | '/careers'
+    | '/conversion'
+    | '/interviews'
+    | '/offers'
+    | '/referrals'
+    | '/settings'
     | '/candidates/$id'
     | '/pipeline/$reqId'
     | '/requisitions/$id'
@@ -113,6 +233,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgenciesRoute: typeof AgenciesRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AnnouncementsRoute: typeof AnnouncementsRoute
+  AuditRoute: typeof AuditRoute
+  CareersRoute: typeof CareersRoute
+  ConversionRoute: typeof ConversionRoute
+  InterviewsRoute: typeof InterviewsRoute
+  OffersRoute: typeof OffersRoute
+  ReferralsRoute: typeof ReferralsRoute
+  SettingsRoute: typeof SettingsRoute
   CandidatesIdRoute: typeof CandidatesIdRoute
   PipelineReqIdRoute: typeof PipelineReqIdRoute
   RequisitionsIdRoute: typeof RequisitionsIdRoute
@@ -123,6 +253,76 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/referrals': {
+      id: '/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offers': {
+      id: '/offers'
+      path: '/offers'
+      fullPath: '/offers'
+      preLoaderRoute: typeof OffersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interviews': {
+      id: '/interviews'
+      path: '/interviews'
+      fullPath: '/interviews'
+      preLoaderRoute: typeof InterviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conversion': {
+      id: '/conversion'
+      path: '/conversion'
+      fullPath: '/conversion'
+      preLoaderRoute: typeof ConversionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcements': {
+      id: '/announcements'
+      path: '/announcements'
+      fullPath: '/announcements'
+      preLoaderRoute: typeof AnnouncementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agencies': {
+      id: '/agencies'
+      path: '/agencies'
+      fullPath: '/agencies'
+      preLoaderRoute: typeof AgenciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,6 +377,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgenciesRoute: AgenciesRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AnnouncementsRoute: AnnouncementsRoute,
+  AuditRoute: AuditRoute,
+  CareersRoute: CareersRoute,
+  ConversionRoute: ConversionRoute,
+  InterviewsRoute: InterviewsRoute,
+  OffersRoute: OffersRoute,
+  ReferralsRoute: ReferralsRoute,
+  SettingsRoute: SettingsRoute,
   CandidatesIdRoute: CandidatesIdRoute,
   PipelineReqIdRoute: PipelineReqIdRoute,
   RequisitionsIdRoute: RequisitionsIdRoute,
