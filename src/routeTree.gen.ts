@@ -11,7 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RequisitionsIndexRouteImport } from './routes/requisitions.index'
+import { Route as PipelineIndexRouteImport } from './routes/pipeline.index'
+import { Route as CandidatesIndexRouteImport } from './routes/candidates.index'
 import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
+import { Route as PipelineReqIdRouteImport } from './routes/pipeline.$reqId'
+import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,39 +27,97 @@ const RequisitionsIndexRoute = RequisitionsIndexRouteImport.update({
   path: '/requisitions/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PipelineIndexRoute = PipelineIndexRouteImport.update({
+  id: '/pipeline/',
+  path: '/pipeline/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandidatesIndexRoute = CandidatesIndexRouteImport.update({
+  id: '/candidates/',
+  path: '/candidates/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RequisitionsIdRoute = RequisitionsIdRouteImport.update({
   id: '/requisitions/$id',
   path: '/requisitions/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PipelineReqIdRoute = PipelineReqIdRouteImport.update({
+  id: '/pipeline/$reqId',
+  path: '/pipeline/$reqId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandidatesIdRoute = CandidatesIdRouteImport.update({
+  id: '/candidates/$id',
+  path: '/candidates/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/candidates/$id': typeof CandidatesIdRoute
+  '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
+  '/candidates/': typeof CandidatesIndexRoute
+  '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/candidates/$id': typeof CandidatesIdRoute
+  '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
+  '/candidates': typeof CandidatesIndexRoute
+  '/pipeline': typeof PipelineIndexRoute
   '/requisitions': typeof RequisitionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/candidates/$id': typeof CandidatesIdRoute
+  '/pipeline/$reqId': typeof PipelineReqIdRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
+  '/candidates/': typeof CandidatesIndexRoute
+  '/pipeline/': typeof PipelineIndexRoute
   '/requisitions/': typeof RequisitionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/requisitions/$id' | '/requisitions/'
+  fullPaths:
+    | '/'
+    | '/candidates/$id'
+    | '/pipeline/$reqId'
+    | '/requisitions/$id'
+    | '/candidates/'
+    | '/pipeline/'
+    | '/requisitions/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/requisitions/$id' | '/requisitions'
-  id: '__root__' | '/' | '/requisitions/$id' | '/requisitions/'
+  to:
+    | '/'
+    | '/candidates/$id'
+    | '/pipeline/$reqId'
+    | '/requisitions/$id'
+    | '/candidates'
+    | '/pipeline'
+    | '/requisitions'
+  id:
+    | '__root__'
+    | '/'
+    | '/candidates/$id'
+    | '/pipeline/$reqId'
+    | '/requisitions/$id'
+    | '/candidates/'
+    | '/pipeline/'
+    | '/requisitions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CandidatesIdRoute: typeof CandidatesIdRoute
+  PipelineReqIdRoute: typeof PipelineReqIdRoute
   RequisitionsIdRoute: typeof RequisitionsIdRoute
+  CandidatesIndexRoute: typeof CandidatesIndexRoute
+  PipelineIndexRoute: typeof PipelineIndexRoute
   RequisitionsIndexRoute: typeof RequisitionsIndexRoute
 }
 
@@ -75,6 +137,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequisitionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pipeline/': {
+      id: '/pipeline/'
+      path: '/pipeline'
+      fullPath: '/pipeline/'
+      preLoaderRoute: typeof PipelineIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candidates/': {
+      id: '/candidates/'
+      path: '/candidates'
+      fullPath: '/candidates/'
+      preLoaderRoute: typeof CandidatesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/requisitions/$id': {
       id: '/requisitions/$id'
       path: '/requisitions/$id'
@@ -82,12 +158,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequisitionsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pipeline/$reqId': {
+      id: '/pipeline/$reqId'
+      path: '/pipeline/$reqId'
+      fullPath: '/pipeline/$reqId'
+      preLoaderRoute: typeof PipelineReqIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candidates/$id': {
+      id: '/candidates/$id'
+      path: '/candidates/$id'
+      fullPath: '/candidates/$id'
+      preLoaderRoute: typeof CandidatesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CandidatesIdRoute: CandidatesIdRoute,
+  PipelineReqIdRoute: PipelineReqIdRoute,
   RequisitionsIdRoute: RequisitionsIdRoute,
+  CandidatesIndexRoute: CandidatesIndexRoute,
+  PipelineIndexRoute: PipelineIndexRoute,
   RequisitionsIndexRoute: RequisitionsIndexRoute,
 }
 export const routeTree = rootRouteImport
