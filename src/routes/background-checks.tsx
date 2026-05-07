@@ -189,8 +189,10 @@ function AdverseActionPanel({ bgcId, aa, status, canDecide }: { bgcId: string; a
         <div className="rounded-md bg-card border border-border p-2">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">Candidate dispute (within window)</div>
           <textarea value={dispute} onChange={e => setDispute(e.target.value)} rows={2} placeholder="Candidate dispute notes…" className="w-full p-2 rounded-md border border-border bg-card text-xs" />
-          <button disabled={dispute.trim().length < 5} onClick={() => { disputeAdverseAction(bgcId, dispute); setDispute(""); toast.success("Dispute logged"); }}
-            className="mt-1 text-xs px-3 h-7 rounded-md border border-border bg-card hover:bg-muted disabled:opacity-40">Submit dispute</button>
+          <button disabled={dispute.trim().length < 5 || !canDecide}
+            onClick={() => { disputeAdverseAction(bgcId, dispute); setDispute(""); toast.success("Dispute logged"); }}
+            title={!canDecide ? "Locked — your role cannot log disputes" : undefined}
+            className="mt-1 text-xs px-3 h-7 rounded-md border border-border bg-card hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1">{!canDecide && <Lock className="h-3 w-3" />} Submit dispute</button>
         </div>
       )}
       {aa.disputed && <div className="text-xs"><Pill tone="warning">Disputed</Pill> <span className="text-muted-foreground">at {aa.disputedAt}</span><div className="italic mt-1">"{aa.disputeNotes}"</div></div>}
