@@ -1,11 +1,12 @@
-import { ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { ReactNode, useEffect } from "react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Briefcase, LayoutDashboard, Users2, Kanban, CalendarCheck2, FileSignature,
   Megaphone, BarChart3, Settings2, FileText, BellRing, Search, LogOut,
   UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles, Bell, Share2,
 } from "lucide-react";
 import { useCurrentUser, setCurrentUser, listUserPresets } from "@/lib/role";
+import { useAuthSession, signOut } from "@/lib/auth";
 
 type Item = { to: string; label: string; icon: any };
 const sections: { label: string; items: Item[] }[] = [
