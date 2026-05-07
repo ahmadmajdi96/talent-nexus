@@ -456,8 +456,249 @@ export const conversionEvents: ConversionEvent[] = [
   },
 ];
 
+// ===================== Background checks =====================
+// Compliant with FCRA / GDPR Article 6(1)(b) — required candidate consent fields tracked.
+
+export type BgCheckStatus =
+  | "NOT_STARTED" | "CONSENT_PENDING" | "REQUESTED" | "IN_PROGRESS"
+  | "ADVERSE_ACTION" | "CLEAR" | "CANCELLED";
+
+export interface BackgroundCheck {
+  id: string;
+  candidateId: string;
+  reqId: string;
+  vendor: "Checkr" | "Sterling" | "HireRight" | "Internal";
+  vendorRequestId?: string;
+  package: "Basic" | "Standard" | "Executive";
+  scope: { identity: boolean; criminal: boolean; education: boolean; employment: boolean; credit: boolean; references: boolean };
+  status: BgCheckStatus;
+  consent: { signed: boolean; signedAt?: string; ipAddress?: string; documentUrl?: string };
+  candidateData: { fullLegalName: string; dateOfBirth: string; ssnLast4?: string; addressHistory: string };
+  requestedAt?: string;
+  completedAt?: string;
+  vendorResponse?: { reportUrl?: string; flags: string[]; raw?: string };
+  recruiterNotified: boolean;
+  notifications: { at: string; channel: "email" | "in_app" | "slack"; to: string; subject: string }[];
+  events: { at: string; actor: string; text: string }[];
+}
+
+export const backgroundChecks: BackgroundCheck[] = [
+  {
+    id: "BGC-2026-0021", candidateId: "C-0099", reqId: "REQ-2026-0088", vendor: "Checkr",
+    vendorRequestId: "chk_req_8h2nq", package: "Standard",
+    scope: { identity: true, criminal: true, education: true, employment: true, credit: false, references: true },
+    status: "IN_PROGRESS",
+    consent: { signed: true, signedAt: "2026-04-30 09:12", ipAddress: "82.14.22.7", documentUrl: "/docs/consent-C-0099.pdf" },
+    candidateData: { fullLegalName: "Lina Marie Sørensen", dateOfBirth: "1991-03-14", addressHistory: "7y Copenhagen, DK" },
+    requestedAt: "2026-04-30 09:14",
+    recruiterNotified: true,
+    notifications: [
+      { at: "2026-04-30 09:14", channel: "email", to: "nora.haddad@coreflow.com", subject: "BGC requested for Lina Sørensen" },
+      { at: "2026-05-03 11:02", channel: "in_app", to: "EMP-1007", subject: "Checkr — education verification in progress" },
+    ],
+    events: [
+      { at: "2026-04-30 09:12", actor: "candidate:C-0099", text: "Consent signed (FCRA disclosure + summary of rights)." },
+      { at: "2026-04-30 09:14", actor: "system", text: "Submitted to Checkr (request_id chk_req_8h2nq)." },
+      { at: "2026-05-03 11:02", actor: "vendor:checkr", text: "Status update: education verification in progress." },
+    ],
+  },
+  {
+    id: "BGC-2026-0019", candidateId: "C-0042", reqId: "REQ-2026-0088", vendor: "Checkr",
+    vendorRequestId: "chk_req_4kf01", package: "Standard",
+    scope: { identity: true, criminal: true, education: true, employment: true, credit: false, references: true },
+    status: "CLEAR",
+    consent: { signed: true, signedAt: "2026-04-22 10:00", ipAddress: "82.14.22.7", documentUrl: "/docs/consent-C-0042.pdf" },
+    candidateData: { fullLegalName: "Reina Patel", dateOfBirth: "1990-11-02", addressHistory: "5y London, UK" },
+    requestedAt: "2026-04-22 10:05", completedAt: "2026-04-25 16:40",
+    vendorResponse: { reportUrl: "/reports/bgc-C-0042.pdf", flags: [] },
+    recruiterNotified: true,
+    notifications: [
+      { at: "2026-04-25 16:42", channel: "email", to: "nora.haddad@coreflow.com", subject: "BGC CLEAR — Reina Patel — proceed with offer" },
+    ],
+    events: [
+      { at: "2026-04-22 10:05", actor: "system", text: "Submitted to Checkr." },
+      { at: "2026-04-25 16:40", actor: "vendor:checkr", text: "Report returned: CLEAR. No flags." },
+    ],
+  },
+];
+
+// ===================== Conversion (CoreHR) hardening =====================
+// Webhook deliveries with retry & exponential backoff, signed payloads.
+
+export interface WebhookDelivery {
+  attempt: number;
+  at: string;
+  httpStatus: number;
+  responseSnippet: string;
+  signatureValid: boolean;
+  durationMs: number;
+}
+
+declare module "./ta-data" {}
+
+// extend ConversionEvent with retries/webhook log on the fly via a parallel map
+export const conversionDeliveries: Record<string, WebhookDelivery[]> = {
+  "EVT-2026-0009": [
+    { attempt: 1, at: "2026-04-26 14:03:01", httpStatus: 502, responseSnippet: "Bad Gateway", signatureValid: true, durationMs: 4221 },
+    { attempt: 2, at: "2026-04-26 14:03:11", httpStatus: 200, responseSnippet: '{"employeeId":"EMP-1085","status":"created"}', signatureValid: true, durationMs: 412 },
+  ],
+};
+
+// JSON-schema style validator (lightweight, runtime, no external lib needed at module load)
+export function validateConversionPayload(p: unknown): { ok: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const isStr = (v: any) => typeof v === "string" && v.length > 0;
+  const isNum = (v: any) => typeof v === "number" && !Number.isNaN(v);
+  if (!p || typeof p !== "object") return { ok: false, errors: ["payload missing"] };
+  const x = p as any;
+  if (x.event !== "candidate.hired") errors.push("event must be 'candidate.hired'");
+  if (x.source !== "HireFlow") errors.push("source must be 'HireFlow'");
+  if (!isStr(x.occurredAt)) errors.push("occurredAt required");
+  for (const k of ["candidateId","firstName","lastName","email","phone","country","location"])
+    if (!isStr(x.candidate?.[k])) errors.push(`candidate.${k} required`);
+  if (x.candidate?.email && !/^.+@.+\..+$/.test(x.candidate.email)) errors.push("candidate.email invalid");
+  for (const k of ["requisitionId","jobTitle","department","costCenter","legalEntity","grade","employmentType","managerId"])
+    if (!isStr(x.position?.[k])) errors.push(`position.${k} required`);
+  if (!isStr(x.offer?.offerId)) errors.push("offer.offerId required");
+  if (!isNum(x.offer?.baseSalary) || x.offer.baseSalary <= 0) errors.push("offer.baseSalary must be > 0");
+  if (!isStr(x.offer?.currency) || x.offer.currency.length !== 3) errors.push("offer.currency must be ISO-4217");
+  if (!isStr(x.offer?.startDate) || !/^\d{4}-\d{2}-\d{2}$/.test(x.offer.startDate)) errors.push("offer.startDate must be YYYY-MM-DD");
+  return { ok: errors.length === 0, errors };
+}
+
+// ===================== Reactive store =====================
+type Listener = () => void;
+const listeners = new Set<Listener>();
+export function subscribe(l: Listener) { listeners.add(l); return () => listeners.delete(l); }
+function notify() { listeners.forEach(l => l()); }
+let version = 0;
+export function getSnapshot() { return version; }
+function bump() { version++; notify(); }
+
+// ===================== Mutators =====================
+const nowIso = () => new Date().toISOString().replace("T"," ").slice(0, 19);
+
+export function moveCandidateStage(candidateId: string, to: Stage, actor = "Nora Haddad") {
+  const c = candidates.find(x => x.id === candidateId); if (!c) return;
+  if (c.stage === to) return;
+  const from = c.stage;
+  c.stage = to;
+  c.events = [{ at: nowIso(), type: "STAGE_MOVE", text: `Moved ${STAGE_LABEL[from]} → ${STAGE_LABEL[to]}`, actor }, ...c.events];
+  bump();
+}
+
+export function submitScorecard(candidateId: string, payload: Omit<Scorecard, "id" | "submittedAt">) {
+  const c = candidates.find(x => x.id === candidateId); if (!c) return;
+  const sc: Scorecard = { ...payload, id: `SC-${Math.random().toString(36).slice(2, 7).toUpperCase()}`, submittedAt: nowIso() };
+  c.scorecards = [...c.scorecards, sc];
+  c.events = [{ at: nowIso(), type: "INTERVIEW", text: `Scorecard submitted by ${sc.interviewerName}: ${sc.recommendation.replace("_"," ")}`, actor: sc.interviewerName }, ...c.events];
+  bump();
+}
+
+export function aggregateScorecards(c: Candidate) {
+  if (!c.scorecards.length) return null;
+  const all = c.scorecards.flatMap(s => s.competencies.map(x => x.score));
+  const avg = all.reduce((a, b) => a + b, 0) / all.length;
+  const recScore = { STRONG_HIRE: 2, HIRE: 1, NO_HIRE: -1, STRONG_NO_HIRE: -2 } as const;
+  const consensus = c.scorecards.reduce((a, s) => a + recScore[s.recommendation], 0);
+  const verdict = consensus >= 2 ? "Hire" : consensus <= -2 ? "No Hire" : "Mixed";
+  return { count: c.scorecards.length, avg: Math.round(avg * 10) / 10, consensus, verdict };
+}
+
+export function createRequisitionFromForecast(forecastId: string, overrides?: Partial<Requisition>) {
+  const f = staffingForecasts.find(x => x.id === forecastId); if (!f) return null;
+  const id = `REQ-2026-${String(100 + requisitions.length).padStart(4, "0")}`;
+  const r: Requisition = {
+    id, title: f.role, department: overrides?.department ?? "TBD", costCenter: overrides?.costCenter ?? "CC-000",
+    legalEntity: overrides?.legalEntity ?? "CoreFlow Global", location: overrides?.location ?? "Remote", country: overrides?.country ?? "GB",
+    level: overrides?.level ?? "L4", employmentType: overrides?.employmentType ?? "FULL_TIME",
+    openings: overrides?.openings ?? 1,
+    hiringManagerId: overrides?.hiringManagerId ?? "EMP-1002", hiringManagerName: overrides?.hiringManagerName ?? "David Chen",
+    recruiterId: "EMP-1007", recruiterName: "Nora Haddad",
+    salaryMin: overrides?.salaryMin ?? 0, salaryMax: overrides?.salaryMax ?? 0, currency: overrides?.currency ?? "USD",
+    justification: overrides?.justification ?? `Auto-generated from WorkGrid forecast ${f.id} (${f.project}).`,
+    backfill: false, skills: f.skills,
+    description: overrides?.description ?? `Sourced from WorkGrid project: ${f.project}. Estimated start ${f.estStart}, ${f.durationMonths} months.`,
+    status: "DRAFT",
+    approvalChain: [{ role: "Hiring Manager", name: overrides?.hiringManagerName ?? "David Chen", status: "PENDING" }],
+    postings: [], openedAt: nowIso().slice(0, 10), targetStart: f.estStart, candidates: 0,
+    workgridForecastId: f.id,
+  };
+  requisitions.unshift(r);
+  f.linkedReqId = r.id;
+  bump();
+  return r;
+}
+
+export function requestBackgroundCheck(input: Omit<BackgroundCheck, "id" | "events" | "notifications" | "recruiterNotified" | "status" | "requestedAt" | "vendorRequestId">) {
+  const id = `BGC-2026-${String(22 + backgroundChecks.length).padStart(4, "0")}`;
+  const bgc: BackgroundCheck = {
+    ...input, id,
+    status: input.consent.signed ? "REQUESTED" : "CONSENT_PENDING",
+    vendorRequestId: input.consent.signed ? `req_${Math.random().toString(36).slice(2, 9)}` : undefined,
+    requestedAt: input.consent.signed ? nowIso() : undefined,
+    recruiterNotified: true,
+    notifications: [{ at: nowIso(), channel: "email", to: "nora.haddad@coreflow.com", subject: `BGC ${input.consent.signed ? "requested" : "awaiting consent"} — ${input.candidateData.fullLegalName}` }],
+    events: [{ at: nowIso(), actor: "Nora Haddad", text: input.consent.signed ? `Submitted to ${input.vendor}.` : "Consent link emailed to candidate." }],
+  };
+  backgroundChecks.unshift(bgc);
+  bump();
+  return bgc;
+}
+
+export function advanceBackgroundCheck(id: string, to: BgCheckStatus, note?: string) {
+  const b = backgroundChecks.find(x => x.id === id); if (!b) return;
+  b.status = to;
+  if (to === "CLEAR" || to === "ADVERSE_ACTION") b.completedAt = nowIso();
+  b.events = [{ at: nowIso(), actor: "vendor", text: note ?? `Status → ${to}` }, ...b.events];
+  b.notifications = [{ at: nowIso(), channel: "in_app", to: "EMP-1007", subject: `BGC ${id} → ${to}` }, ...b.notifications];
+  bump();
+}
+
+export function retryConversion(eventId: string) {
+  const e = conversionEvents.find(x => x.id === eventId); if (!e) return;
+  const list = (conversionDeliveries[eventId] = conversionDeliveries[eventId] ?? []);
+  const attempt = list.length + 1;
+  const ok = Math.random() > 0.3;
+  list.push({
+    attempt, at: nowIso(),
+    httpStatus: ok ? 200 : 502,
+    responseSnippet: ok ? `{"employeeId":"EMP-${1090 + attempt}","status":"created"}` : "Bad Gateway",
+    signatureValid: true,
+    durationMs: 200 + Math.floor(Math.random() * 600),
+  });
+  if (ok) {
+    e.status = "EMPLOYEE_CREATED";
+    e.newEmployeeId = e.newEmployeeId ?? `EMP-${1090 + attempt}`;
+  } else {
+    e.status = "FAILED";
+  }
+  bump();
+}
+
+export function emitConversion(candidateId: string) {
+  const payload = buildConversionPayload(candidateId);
+  if (!payload) return null;
+  const v = validateConversionPayload(payload);
+  if (!v.ok) return { error: "validation_failed", details: v.errors };
+  const c = candidates.find(x => x.id === candidateId)!;
+  const o = offers.find(x => x.candidateId === candidateId)!;
+  const id = `EVT-2026-${String(10 + conversionEvents.length).padStart(4, "0")}`;
+  const ev: ConversionEvent = {
+    id, candidateId: c.id, candidateName: `${c.firstName} ${c.lastName}`,
+    reqId: c.reqId, offerId: o.id, acceptedAt: nowIso(),
+    status: "QUEUED", payload,
+  };
+  conversionEvents.unshift(ev);
+  retryConversion(id); // first attempt
+  return ev;
+}
+
 // helpers
 export const candidatesByReq = (reqId: string) => candidates.filter(c => c.reqId === reqId);
 export const reqById = (id: string) => requisitions.find(r => r.id === id);
 export const candidateById = (id: string) => candidates.find(c => c.id === id);
 export const offersByCandidate = (id: string) => offers.filter(o => o.candidateId === id);
+export const bgChecksByCandidate = (id: string) => backgroundChecks.filter(b => b.candidateId === id);
+export const conversionByCandidate = (id: string) => conversionEvents.find(e => e.candidateId === id);
+

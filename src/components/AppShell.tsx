@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Briefcase, LayoutDashboard, Users2, Kanban, CalendarCheck2, FileSignature,
   Megaphone, BarChart3, Settings2, FileText, BellRing, Search, LogOut,
-  UserPlus, Building2, GitMerge, Globe2,
+  UserPlus, Building2, GitMerge, Globe2, ShieldCheck, Sparkles,
 } from "lucide-react";
 
 type Item = { to: string; label: string; icon: any };
@@ -11,12 +11,14 @@ const sections: { label: string; items: Item[] }[] = [
   { label: "Hiring", items: [
     { to: "/", label: "Dashboard", icon: LayoutDashboard },
     { to: "/requisitions", label: "Requisitions", icon: Briefcase },
+    { to: "/forecasts", label: "WG Forecasts", icon: Sparkles },
     { to: "/pipeline", label: "Pipeline", icon: Kanban },
     { to: "/candidates", label: "Candidates", icon: Users2 },
   ]},
   { label: "Process", items: [
     { to: "/interviews", label: "Interviews", icon: CalendarCheck2 },
     { to: "/offers", label: "Offers", icon: FileSignature },
+    { to: "/background-checks", label: "Background Checks", icon: ShieldCheck },
     { to: "/conversion", label: "CoreHR Handoff", icon: GitMerge },
   ]},
   { label: "Sourcing", items: [
