@@ -84,8 +84,14 @@ function CandidateDetail() {
           </div>
 
           <div className="page-section p-5">
-            <div className="font-semibold mb-3">Interview scorecards</div>
-            {c.scorecards.length === 0 && <div className="text-xs text-muted-foreground">No scorecards submitted yet.</div>}
+            <div className="flex items-center justify-between mb-3">
+              <div className="font-semibold">Interview scorecards</div>
+              {agg && <div className="flex items-center gap-2 text-xs">
+                <span className="text-muted-foreground">{agg.count} submitted · avg {agg.avg}/5</span>
+                <Pill tone={agg.verdict === "Hire" ? "success" : agg.verdict === "No Hire" ? "destructive" : "warning"}>Verdict: {agg.verdict}</Pill>
+              </div>}
+            </div>
+            {c.scorecards.length === 0 && <div className="text-xs text-muted-foreground">No scorecards submitted yet. <Link to="/candidates/$id/scorecard" params={{ id: c.id }} className="text-primary hover:underline">Submit one →</Link></div>}
             <div className="space-y-3">
               {c.scorecards.map(s => (
                 <div key={s.id} className="rounded-lg border border-border p-3">
@@ -166,6 +172,47 @@ function CandidateDetail() {
               <div className="flex items-center justify-between"><span>Talent pool opt-in</span><Pill tone={c.consent.talentPool ? "success" : "muted"}>{c.consent.talentPool ? "Yes" : "No"}</Pill></div>
               <div className="flex items-center justify-between"><span>Data retention until</span><span className="font-mono">{c.consent.expiresAt}</span></div>
             </div>
+          </div>
+
+          {bgcs.length > 0 && <div className="page-section p-5">
+            <div className="font-semibold mb-3 flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Background checks <Link to="/background-checks" className="ml-auto text-[11px] text-primary font-normal hover:underline">All →</Link></div>
+            {bgcs.map(b => (
+              <div key={b.id} className="rounded-md border border-border p-2 text-xs space-y-1">
+                <div className="flex items-center justify-between"><span className="font-mono">{b.id}</span><Pill tone={b.status === "CLEAR" ? "success" : b.status === "ADVERSE_ACTION" ? "destructive" : "info"}>{b.status.replace("_"," ")}</Pill></div>
+                <div className="text-muted-foreground">{b.vendor} · {b.package}</div>
+                {b.completedAt && <div className="text-muted-foreground">Completed {b.completedAt}</div>}
+              </div>
+            ))}
+          </div>}
+
+          <div className="page-section p-5">
+            <div className="font-semibold mb-3 flex items-center gap-2"><GitMerge className="h-4 w-4 text-primary" /> CoreHR conversion</div>
+            {!conv && <div className="text-xs text-muted-foreground">Not yet converted. Will fire on offer acceptance.</div>}
+            {conv && (() => {
+              const dlv = conversionDeliveries[conv.id] ?? [];
+              return <div className="space-y-2 text-xs">
+                <div className="flex items-center justify-between"><span className="font-mono">{conv.id}</span><Pill tone={conv.status === "EMPLOYEE_CREATED" ? "success" : conv.status === "FAILED" ? "destructive" : "warning"}>{conv.status.replace("_"," ")}</Pill></div>
+                {conv.newEmployeeId && <div className="flex items-center justify-between"><span className="text-muted-foreground">CoreHR Employee</span><span className="font-mono font-semibold">{conv.newEmployeeId}</span></div>}
+                <div className="flex items-center justify-between"><span className="text-muted-foreground">Accepted</span><span className="font-mono">{conv.acceptedAt}</span></div>
+                <div className="flex items-center justify-between"><span className="text-muted-foreground">Delivery attempts</span><span className="font-mono">{dlv.length}</span></div>
+                <div className="space-y-0.5 pt-1 border-t border-border">
+                  {dlv.map(d => (
+                    <div key={d.attempt} className="font-mono text-[10px] flex items-center gap-1.5">
+                      <span className="text-muted-foreground">#{d.attempt}</span>
+                      <span className={d.httpStatus < 300 ? "text-success" : "text-destructive"}>{d.httpStatus}</span>
+                      <span className="text-muted-foreground">{d.durationMs}ms</span>
+                      <span className="text-muted-foreground">· {d.at.split(" ")[1]}</span>
+                    </div>
+                  ))}
+                </div>
+                {conv.status === "FAILED" && (
+                  <button onClick={() => { retryConversion(conv.id); toast.success("Retry queued"); }} className="w-full mt-2 inline-flex items-center justify-center gap-1 text-xs font-medium px-2 h-8 rounded-md border border-border bg-card hover:bg-muted">
+                    <RefreshCw className="h-3 w-3" /> Retry delivery
+                  </button>
+                )}
+                <Link to="/conversion" className="block mt-1 text-primary text-[11px] hover:underline">Open handoff log →</Link>
+              </div>;
+            })()}
           </div>
         </div>
       </div>
