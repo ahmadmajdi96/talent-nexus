@@ -3,8 +3,10 @@ import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
 import { Avatar } from "@/components/Avatar";
-import { ArrowLeft, Mail, Phone, MapPin, FileText, Star, ShieldCheck, Calendar } from "lucide-react";
-import { candidateById, reqById, offersByCandidate, interviews, STAGE_LABEL } from "@/lib/ta-data";
+import { ArrowLeft, Mail, Phone, MapPin, FileText, Star, ShieldCheck, Calendar, GitMerge, ClipboardCheck, RefreshCw } from "lucide-react";
+import { candidateById, reqById, offersByCandidate, interviews, STAGE_LABEL, bgChecksByCandidate, conversionByCandidate, aggregateScorecards, retryConversion, conversionDeliveries } from "@/lib/ta-data";
+import { useTAStore } from "@/hooks/use-ta-store";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/candidates/$id")({
   head: ({ params }) => ({ meta: [
@@ -16,11 +18,15 @@ export const Route = createFileRoute("/candidates/$id")({
 });
 
 function CandidateDetail() {
+  useTAStore();
   const { id } = Route.useParams();
   const c = candidateById(id); if (!c) throw notFound();
   const r = reqById(c.reqId);
   const os = offersByCandidate(c.id);
   const ivs = interviews.filter(i => i.candidateId === c.id);
+  const bgcs = bgChecksByCandidate(c.id);
+  const conv = conversionByCandidate(c.id);
+  const agg = aggregateScorecards(c);
   const display = c.anonymousMode ? `Candidate ${c.id}` : `${c.firstName} ${c.lastName}`;
 
   return (
@@ -30,7 +36,7 @@ function CandidateDetail() {
         title={<span className="flex items-center gap-3">{display} <Pill tone="primary">{STAGE_LABEL[c.stage]}</Pill> {c.anonymousMode && <Pill tone="accent"><ShieldCheck className="h-3 w-3" /> Anonymous mode</Pill>}</span>}
         description={r && <>Applying for <Link to="/requisitions/$id" params={{ id: r.id }} className="text-primary hover:underline">{r.title}</Link> · {r.location}</>}
         actions={<>
-          <button className="inline-flex items-center gap-1.5 text-sm font-medium px-3 h-9 rounded-md border border-border bg-card hover:bg-muted">Move stage</button>
+          <Link to="/candidates/$id/scorecard" params={{ id: c.id }} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 h-9 rounded-md border border-border bg-card hover:bg-muted"><ClipboardCheck className="h-4 w-4" /> Submit scorecard</Link>
           <button className="inline-flex items-center gap-1.5 text-sm font-medium px-3 h-9 rounded-md bg-primary text-primary-foreground hover:opacity-90">Schedule interview</button>
         </>}
       />
