@@ -396,16 +396,21 @@ export const auditLog = [
 ];
 
 // CoreHR conversion events (the bridge to People Hub)
+export type ConversionErrorCategory = "TRANSIENT" | "AUTH" | "VALIDATION" | "DUPLICATE" | "REMOTE_5XX" | "UNKNOWN";
+
 export interface ConversionEvent {
   id: string;
+  idempotencyKey: string; // deterministic per candidate.hired (candidateId + offerId)
   candidateId: string;
   candidateName: string;
   reqId: string;
   offerId: string;
   acceptedAt: string;
-  status: "QUEUED" | "DELIVERED" | "EMPLOYEE_CREATED" | "FAILED";
+  status: "QUEUED" | "DELIVERED" | "EMPLOYEE_CREATED" | "FAILED" | "DUPLICATE";
   newEmployeeId?: string;
   payload: CoreHRConversionPayload;
+  lastErrorCategory?: ConversionErrorCategory;
+  lastErrorMessage?: string;
 }
 
 // Mirrors the CoreHR API contract (HireFlow → CoreHR candidate.hired event)
