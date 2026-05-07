@@ -49,9 +49,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const me = useCurrentUser();
   const presets = listUserPresets();
   const initials = me.name.split(" ").map(s => s[0]).join("").slice(0,2).toUpperCase();
+  const auth = useAuthSession();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!auth && path !== "/login") navigate({ to: "/login", search: { redirect: path } as any });
+  }, [auth, path, navigate]);
+  if (!auth) return null;
   return (
-    <div className="min-h-screen flex bg-background">
-      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col">
+    <div className="h-screen flex bg-background overflow-hidden">
+      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col fixed inset-y-0 left-0 z-20">
         <div className="px-5 py-5 flex items-center gap-3 border-b border-sidebar-border">
           <div className="h-10 w-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-md" style={{ background: "var(--gradient-primary)" }}>
             <Briefcase className="h-5 w-5" />
