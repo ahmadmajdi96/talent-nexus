@@ -795,6 +795,13 @@ export function startAdverseAction(bgcId: string, reasons: string[], actor = "No
     ...b.notifications,
   ];
   auditLog.unshift({ id: `AL-${7400 + auditLog.length}`, entity: "BackgroundCheck", entityId: b.id, action: "ADVERSE_PRE_NOTICE", actor, at: nowIso(), text: `Pre-adverse notice: ${reasons.join("; ")}` });
+  // Multi-channel notifications
+  import("./notifications").then(({ broadcastMilestone }) => broadcastMilestone({
+    milestone: "PRE_NOTICE",
+    subject: `Pre-adverse action notice issued for ${b.candidateData.fullLegalName}`,
+    body: `Reasons: ${reasons.join("; ")}. Dispute window ends ${b.adverseAction!.disputeWindowEndsAt}.`,
+    entity: "BackgroundCheck", entityId: b.id, candidateId: b.candidateId, reqId: b.reqId,
+  }));
   bump();
 }
 
@@ -804,6 +811,13 @@ export function disputeAdverseAction(bgcId: string, notes: string) {
   b.adverseAction.disputedAt = nowIso();
   b.adverseAction.disputeNotes = notes;
   b.events = [{ at: nowIso(), actor: `candidate:${b.candidateId}`, text: `Dispute submitted: ${notes}` }, ...b.events];
+  auditLog.unshift({ id: `AL-${7450 + auditLog.length}`, entity: "BackgroundCheck", entityId: b.id, action: "ADVERSE_DISPUTE", actor: `candidate:${b.candidateId}`, at: nowIso(), text: `Dispute logged: ${notes}` });
+  import("./notifications").then(({ broadcastMilestone }) => broadcastMilestone({
+    milestone: "DISPUTE_LOGGED",
+    subject: `Candidate disputed adverse action — ${b.candidateData.fullLegalName}`,
+    body: notes,
+    entity: "BackgroundCheck", entityId: b.id, candidateId: b.candidateId, reqId: b.reqId,
+  }));
   bump();
 }
 
@@ -816,6 +830,12 @@ export function decideAdverseAction(bgcId: string, decision: NonNullable<Adverse
   if (decision !== "PROCEED") b.adverseAction.finalNoticeAt = nowIso();
   b.events = [{ at: nowIso(), actor, text: `Adverse action decision: ${decision}. Rationale: ${rationale}` }, ...b.events];
   auditLog.unshift({ id: `AL-${7500 + auditLog.length}`, entity: "BackgroundCheck", entityId: b.id, action: `ADVERSE_${decision}`, actor, at: nowIso(), text: `Adverse decision ${decision} for ${b.candidateData.fullLegalName}: ${rationale}` });
+  import("./notifications").then(({ broadcastMilestone }) => broadcastMilestone({
+    milestone: "FINAL_DECISION",
+    subject: `Final adverse action decision: ${decision} — ${b.candidateData.fullLegalName}`,
+    body: rationale,
+    entity: "BackgroundCheck", entityId: b.id, candidateId: b.candidateId, reqId: b.reqId,
+  }));
   bump();
 }
 
