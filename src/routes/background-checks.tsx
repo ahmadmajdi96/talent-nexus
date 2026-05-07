@@ -28,8 +28,12 @@ const tone: Record<BgCheckStatus, any> = {
 
 function BgPage() {
   useTAStore();
+  const me = useCurrentUser();
+  const canManage = CAN.manageBackgroundCheck(me.role);
+  const canDecide = CAN.decideAdverseAction(me.role);
 
   const advance = (id: string, to: BgCheckStatus) => {
+    if (!canManage) return toast.error(`Role ${me.role.replace("_"," ")} cannot advance background checks`);
     advanceBackgroundCheck(id, to);
     toast.success(`Status → ${to}`);
   };
@@ -37,9 +41,10 @@ function BgPage() {
   return (
     <AppShell>
       <PageHeader
-        title={<span className="flex items-center gap-3">Background Checks <Pill tone="success"><ShieldCheck className="h-3 w-3" /> FCRA / GDPR compliant</Pill></span>}
+        title={<span className="flex items-center gap-3">Background Checks <Pill tone="success"><ShieldCheck className="h-3 w-3" /> FCRA / GDPR compliant</Pill>{!canManage && <Pill tone="muted"><Lock className="h-3 w-3" /> Read-only ({me.role.replace("_"," ")})</Pill>}</span>}
         description="Vendor-integrated background screening with consent capture, status tracking, and automated recruiter notifications."
       />
+
 
       <div className="space-y-4">
         {backgroundChecks.map(b => {
