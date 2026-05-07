@@ -4,9 +4,9 @@ import { z } from "zod";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { Pill } from "@/components/StatusPill";
-import { candidateById, reqById, submitScorecard, aggregateScorecards, type Scorecard } from "@/lib/ta-data";
+import { candidateById, reqById, submitScorecard, finalizeScorecard, aggregateScorecards, type Scorecard } from "@/lib/ta-data";
 import { useTAStore } from "@/hooks/use-ta-store";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/candidates/$id/scorecard")({
